@@ -19,30 +19,30 @@ timezone: Asia/Shanghai
 
 # jekyll-seo-tag 设置 › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # --------------------------
-title: Nihil       # 主标题
+title: Olimi       # 主标题
 
-tagline: 丑新罢了   # 副标题
+tagline: 来者是客   # 副标题
 
 description: >-                        # 由 seo meta 和 atom feed 使用
-  Nichts Hsu 的个人博客
+  Olimi 的个人博客
 
 # 填入你的网站的协议和域名，例如，'https://username.github.io'
-url: 'https://nihil.cc'
+url: 'https://olimiya.github.io'
 
-author: Nichts Hsu    # 全名
+author: Olimi    # 全名
 
 github:
-  username: NichtsHsu     # Github 用户名
+  username: olimiya     # Github 用户名
 
 twitter:
   username: Still_Nihil       # 推特用户名
 
 social:
-  name: Nichts Hsu                  # 将会显示为页脚处的版权所有者
-  email: NichtsVonChaos@gmail.com             # 邮箱地址
+  name: Olimi                  # 将会显示为页脚处的版权所有者
+  email: olimi861921648@gmail.com             # 邮箱地址
   links:
     # 第一个链接将会作为版权所有者的链接
-    - https://nihil.cc/
+    - https://olimiya.github.io/
     - https://twitter.com/NichtsHsu      # 推特主页
     - https://github.com/NichtsHsu       # Github 主页
     # 取消注释以添加更多链接
@@ -93,7 +93,7 @@ theme_mode:   # [light|dark]
 img_cdn: ''
 
 # 侧边栏的头像，支持本地或 CROS 资源
-avatar: /avatar.png
+avatar: /avatar.jpg
 
 # 设置显示右侧边栏的内容
 panel:
