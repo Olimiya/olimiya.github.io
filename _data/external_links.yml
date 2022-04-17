@@ -7,11 +7,11 @@
   automatic_name: true
   link: https://996.icu
 -
-  icon: icon-nihil-github
+  icon: icon-github
   use_iconfont: true
   name: 此博客的 Github 仓库
   automatic_name: false
-  link: https://github.com/NichtsHsu/nichtshsu.github.io
+  link: https://github.com/Olimiya/olimiya.github.io
 # 在下面添加更多外部链接
 # -
 #   icon: 

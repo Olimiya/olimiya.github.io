@@ -3,31 +3,32 @@ title: 关于
 icon: iconfont icon-info
 order: 5
 ---
-
 ## 个人状态
+就读于华南理工大学的一名苦逼研究生。本硕专业都是软件工程。
+一枚小菜鸡，但保持心向天空的勇气。
+"活着就要做有意义的事，有意义的事就是好好活着"
+永远保持一颗好奇心，每天都在做有意义的事情。
 
-毕业于华南理工大学软件工程专业，现就职于深圳创通联达智能技术有限公司，从事基于高通平台的 OS 开发。主要负责的模块是 USB 与 Service。
+## 价值观
+1. 感情最重要的是陪伴。
+2. 生活重要的是，有意思（“活着就要做有意义的事，有意义的事就是好好活着 ”）。
+3. 努力是被尊重的前提。
+4. 想要的就要靠自己努力去争取。
 
-主要使用 C/C++ 开发，最喜欢的语言是 Rust。
+## 方法论
+1. 不抱有侥幸心理，不用赌博的方式去贪求利益或决定一件事情。（风险>收益）
+2. 不抱有侥幸心理，做一件事情就尽己所能做到最好。（提前准备>事后补救）
+3. 沟通过程以尊重对方为前提。
 
-## 常用 ID
-
-* Nihil
-* Nichts Hsu
-* NichtsVonChaos（早期 ID，多用于早期注册的账号，如 gmail）
-
-## 已弃用 ID
-
-* towanoICIT（略称 icit，仅在与 I Wanna 圈有关联时使用）
-
-## 个人账号
-
-* QQ：非公开
-* Twitter：[@NichtsHsu](https://twitter.com/NichtsHsu){:target="_blank"}
-* Gmail：<mailto:NichtsVonChaos@gmail.com>
-* Github：[NichtsHsu](https://github.com/NichtsHsu){:target="_blank"}
-* Discord：Nihil#4200
-* Bilibili：[-NIHIL-](https://space.bilibili.com/6631803){:target="_blank"}
-* Steam：[Nihil](https://steamcommunity.com/id/NichtsHsu/){:target="_blank"}
-
-大部分账号都是隔三差五看一次，很久才回复是很正常的。
+## Seed
+1. 我应该在任何时候捕获这些想法(seed)，想法远比正在做的事情重要。（无论是思考，还是睡眠，还是产出这些想法的工作）
+2. 处理一件事情时，记住它已经发生了。（淡定从容地接受它）
+3. 越是着急完成一件事情，越应该按部就班根据习惯完成它。（心急总是坏事）
+4. 当竭尽所能去为一件事情努力之后，剩下的交给老天和时间。（耐心等待事情转变的契机）
+5. 明天的太阳永远照常升起。（拒绝焦虑，放平心态）
+6. 嘲笑别人时，想想别人有没有自己身上的条件。
+7. 为难的承诺要三思，失信远比拒绝要来得难堪。
+8. 想做一件事时，最好的完成时刻就是马上。（既然要做那等什么呢）
+9. 一个好的影响就是让你养成好的习惯，改掉不好的习惯，而坏影响则相反。
+10. I'm just a normal person, with some strange thoughts and imaginary dreams, who wants to be good at being myself. I insist  on my right of saying no as my freedom while I accept no as other's freedom. （记住自己的平凡，只能做自己，也只会做自己。站在别人角度思考是一种礼貌，但一直想象别人的想法会逐渐迷失自己。）
+11. 我要做一件事情，最大的动机就是我要做，所以也就不需要被推着或者被哄着去做。（该睡觉时就睡觉，该说的话就直接说）
