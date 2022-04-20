@@ -157,10 +157,6 @@ assets:
 # 每一页的帖子数量
 paginate: 10
 
-# 自动生成站点地图
-plugins:
- - jekyll-sitemap    #jekyll的站点地图插件，用于生成站点地图
-
 # ------------ 下面的设置不建议修改 ------------------
 
 kramdown:

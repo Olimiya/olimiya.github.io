@@ -55,8 +55,8 @@ VMware网络配置就是设置虚拟机网络虚拟化的方式，目的是将�
 
 桥接模式的理解：
 
->桥接模式就是将主机网卡与虚拟的网卡利用虚拟网桥进行通信。类似于把物理主机虚拟为一个交换机，所有桥接设置的虚拟机连接到这个交换机的一个接口上，物理主机也同样插在这个交换机当中，所以所有桥接下的网卡与网卡都是交换模式的，相互可以访问而不干扰。在桥接模式下，虚拟机IP地址需要与主机在同一网段，如果需要联网，则网关与DNS需要与主机网卡一致。 
->原文链接：https://blog.csdn.net/qq_39192827/article/details/85872025
+>桥接模式就是将主机网卡与虚拟的网卡利用虚拟网桥进行通信。类似于把物理主机虚拟为一个交换机，所有桥接设置的虚拟机连接到这个交换机的一个接口上，物理主机也同样插在这个交换机当中，所以所有桥接下的网卡与网卡都是交换模式的，相互可以访问而不干扰。在桥接模式下，虚拟机IP地址需要与主机在同一网段，如果需要联网，则网关与DNS需要与主机网卡一致。
+>原文链接：<https://blog.csdn.net/qq_39192827/article/details/85872025>
 
 ![img](https://img-blog.csdnimg.cn/20190105204909419.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5MTkyODI3,size_16,color_FFFFFF,t_70)
 
@@ -69,7 +69,7 @@ VMware网络配置就是设置虚拟机网络虚拟化的方式，目的是将�
 - 虚拟机允许访问Internet互联网（当然宿主机必须可以访问互联网才行）。
 - 主机和虚拟机通过单位局域网，互联互通。
 
-(原文链接：https://segmentfault.com/a/1190000024580532)
+(原文链接：<https://segmentfault.com/a/1190000024580532>)
 
 第二第四点特点决定了，当我们想将多台虚拟机(部署在一台或多台电脑上)连成一个局域网时，桥接模式就是首选。这种方法配置起来和使用起来也是较为方便，是VMware的默认配置。
 
@@ -113,12 +113,12 @@ VMware网络配置就是设置虚拟机网络虚拟化的方式，目的是将�
   > 选择复制物理网络连接状态选项:
   >
   > 复制网络连接状态仅用于笔记本电脑在有线网络与无线网络之间切换时进行IP地址续订，虚拟机IP地址不变
-  > 原文链接：https://blog.csdn.net/qq_41638851/article/details/105214736
+  > 原文链接：<https://blog.csdn.net/qq_41638851/article/details/105214736>
 
 ​	一般就不用勾了。
 
 - 确定保存之后，重启(开启)虚拟机即可使用桥接模式。
-- 虚拟机内部。如果是使用无线联网，那一般系统会默认选择DHCP自动分配IP，无需自行配置。若是有线联网，则需自行配置IP和DNS等。配置方式根据自己虚拟机系统和版本，以及连接方式，自行搜索即可。如：ubuntu18.04：https://blog.csdn.net/u014454538/article/details/88646689
+- 虚拟机内部。如果是使用无线联网，那一般系统会默认选择DHCP自动分配IP，无需自行配置。若是有线联网，则需自行配置IP和DNS等。配置方式根据自己虚拟机系统和版本，以及连接方式，自行搜索即可。如：ubuntu18.04：<https://blog.csdn.net/u014454538/article/details/88646689>
 
 ### 桥接模式的选择
 
@@ -133,7 +133,7 @@ VMware网络配置就是设置虚拟机网络虚拟化的方式，目的是将�
 NAT(网络地址转换)，是一种在IP[数据包](https://zh.wikipedia.org/wiki/封包)通过[路由器](https://zh.wikipedia.org/wiki/路由器)或[防火墙](https://zh.wikipedia.org/wiki/防火牆)时重写来源[IP地址](https://zh.wikipedia.org/wiki/IP地址)或目的IP地址的技术(wiki)。
 
 > 比如192.168.0.123这个地址要访问internet，它的数据包就要通过一个网关或者路由器，而网关或者路由器拥有一个能访问internet的ip地址，这样的网关和路由器就要在收发数据包时，对数据包的IP协议层数据进行更改（即 NAT），以使私有网段的主机能够顺利访问internet。
-> 原文链接：https://blog.csdn.net/zlfing/article/details/76943895
+> 原文链接：<https://blog.csdn.net/zlfing/article/details/76943895>
 
 也是网络管理中常用的方式了。优点在于NAT内部局域网与外界隔离，较为安全。内部地址空间也是独立进行维护，与公网IP分离，有效降低IP地址空间不足的问题。缺点是数据包都要经过NAT设备(路由器或网关)更改源和目的IP，重新查询NAT地址转换表，降低了通信效率。
 
@@ -145,7 +145,7 @@ NAT(网络地址转换)，是一种在IP[数据包](https://zh.wikipedia.org/wik
 >
 > 可见NAT模式下主机更像是虚拟机们的"路由器"。所以虚拟机和主机不再同一网段下，可以理解为主机是虚拟机的"上级"。
 > ————————————————
-> 原文链接：https://blog.csdn.net/qq_39192827/article/details/85872025
+> 原文链接：<https://blog.csdn.net/qq_39192827/article/details/85872025>
 
 同样举个例子，比如物理主机的IP是10.44.11.54，虚拟机分配到的IP可能是192.168.1.128(具体网段是什么是自己设置的)，但可以看到网段是不一致的。
 
@@ -266,10 +266,6 @@ PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
 
 ```
 
-
-
-
-
 ### NAT模式配置
 
 - 进入VMware->Workstation->编辑->虚拟网络编辑器。
@@ -371,7 +367,7 @@ NAT模式的特点：
 > 2、NAT模式自动获取IP也很方便，需要注意开启VMnet8网卡
 > 3、仅主机模式一般很少用，但是它安全，需要注意开启VMnet1网卡
 > ————————————————
-> 原文链接：https://blog.csdn.net/a__int__/article/details/111208626
+> 原文链接：<https://blog.csdn.net/a__int__/article/details/111208626>
 
 ## 其他情况
 
@@ -401,12 +397,12 @@ WSL2默认使用的是NAT模式。因此也存在上述NAT模式的一些问题�
 
 完整的引用：
 
-配置参考：https://segmentfault.com/a/1190000024580532
+配置参考：<https://segmentfault.com/a/1190000024580532>
 
 原理参考：
 
-https://blog.csdn.net/qq_39192827/article/details/85872025
+<https://blog.csdn.net/qq_39192827/article/details/85872025>
 
-https://blog.csdn.net/zlfing/article/details/76943895
+<https://blog.csdn.net/zlfing/article/details/76943895>
 
-https://blog.csdn.net/a__int__/article/details/111208626
+<https://blog.csdn.net/a__int__/article/details/111208626>
