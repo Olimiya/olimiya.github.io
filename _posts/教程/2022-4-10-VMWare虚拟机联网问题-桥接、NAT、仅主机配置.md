@@ -325,18 +325,18 @@ NAT模式的特点：
 
 - 进入VmWare->主菜单->虚拟网络编辑器
 
-![image](https://segmentfault.com/img/bVbPieA)
+![image](https://raw.githubusercontent.com/Olimiya/PicBed/main/bVbPieA)
 
 - 在网络列表中选择“VMnet1”,如果没有，可以点击“添加网络”按钮增加，为什么是VMnet1呢，这个应该是VMWare默认设置，当然是用其他网卡也是可以的。
 - 选择“仅主机模式”
 - 并选择“将主机虚拟适配器连接到此网络”和“是用本地DHCP服务将IP地址分配给虚拟机”选项
 - 子网IP:10.10.10.0，子网掩码：255.255.255.0，我习惯将“仅主机模式”的子网网段配置为“10.10.10.0”，这个可以根据自己的喜好来设置。
 
-![image](https://segmentfault.com/img/bVbPifL)
+![image](https://raw.githubusercontent.com/Olimiya/PicBed/main/bVbPifL)
 
 - 然后修改虚拟机设置，将网络适配器修改为“仅主机模式”
 
-![image](https://segmentfault.com/img/bVbPiiy)
+![image](https://raw.githubusercontent.com/Olimiya/PicBed/main/bVbPiiy)
 
 ## 小结
 
