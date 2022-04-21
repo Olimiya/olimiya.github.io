@@ -16,7 +16,7 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
 
 使用方法：
 
-基于 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题定制化的个人博客，[点击此处进入](https://nihil.cc/)。
+基于 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题定制化的个人博客.
 
 [Nihil的定制化版本](https://github.com/NichtsHsu/nichtshsu.github.io)
 
