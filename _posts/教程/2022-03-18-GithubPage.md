@@ -20,6 +20,16 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
 
 [Nihil的定制化版本](https://github.com/NichtsHsu/nichtshsu.github.io)
 
+### Jekyll使用
+
+- 本地启动服务器
+
+```bash
+bundle exec jekyll serve
+```
+
+
+
 ## Github page + Hexo
 
 Reference:
