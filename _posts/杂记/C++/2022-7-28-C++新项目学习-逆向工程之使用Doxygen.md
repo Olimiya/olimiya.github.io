@@ -86,5 +86,8 @@ doxygen: [Doxygen + Graphviz + Htmlhelp, 成为文档好手 - maxweii - 博客�
 
 ![img](https://raw.githubusercontent.com/Olimiya/PicBed/main/clip_image002-16589734221812.jpg)
 
+3. 搜索引擎。使用index.html查看时的搜索框和htmlhelper不能共用。所以使用index查看就要禁止生成htmlhelp.
 
+   ![image-20220728160514575](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20220728160514575.png)
 
+   
