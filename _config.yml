@@ -16,6 +16,8 @@ prefer_datetime_locale:
 
 # 修改为你的时区 › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
 timezone: Asia/Shanghai
+# 时区问题导致老是Skipping: .md has a future date
+future: true
 
 # jekyll-seo-tag 设置 › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # --------------------------
