@@ -21,7 +21,7 @@ tags: [Windows Terminal, WSL]
 
 之前发过了一次，重新发一次是因为，CSDN富文本编辑器是真滴难用！！每次回来补充记录就是折磨。故此重新弄一份MD的取代原本的。
 
-## ​Linux子系统WSL
+## Linux子系统WSL
 
 启动方式：
 ​​​​​​​​​​​​​​![启动Linux子系统](https://img-blog.csdnimg.cn/e91dbafc30114d8c8e3cf38d0194444b.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
@@ -81,6 +81,18 @@ $ del d:\wsl\ubuntu18.04.tar
 [安装WSL|Microsoft Docs](https://docs.microsoft.com/zh-cn/windows/wsl/install)
 ​[旧版 WSL 的手动安装步骤](https://docs.microsoft.com/zh-cn/windows/wsl/install-manual)
 
+**更新+2：**
+
+输入：`wsl --set-default-version 2`之前，需启动BIOS虚拟化：
+
+```powershell
+bcdedit /set hypervisorlaunchtype auto
+```
+
+然后重启电脑。否则会显示：
+
+> 请启用虚拟机平台 Windows 功能并确保在 BIOS 中启用虚拟化。
+
 ## Windows Terminal
 
 安装就直接通过Microsoft store安装即可（这里本人碰到个问题是，挂着代理的情况下连不上Microsoft store，要关掉代理，还试过连上了但一直显示无法连接Internet没办法安装，这时换一个网络，比如手机热点，就解决了）。安装完之后可以到设置里面更改位置，本人是放在D盘，更改方式：
@@ -89,9 +101,25 @@ $ del d:\wsl\ubuntu18.04.tar
 
 另外，设置->系统->存储->更改新内容的保存位置，可以修改应用保存位置，但本人改了之后并没有什么反应。
 
+**更新：**
+
+关于安装路径：在新电脑安装，安装完成后无法移动位置。但是设置->系统->存储->更改新内容的保存位置，倒是可以在重装之后装到指定磁盘去。个人装到了D盘，就是多出了很多文件夹有点难看。
+
+![image-20220802162801767](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20220802162801767-16594325879651.png)
+
+关于右键菜单：似乎安装在D盘，自动添加的右键菜单也没了。不过没事，刚好可以自定义。方法：使用ContextMenuManager添加。
+
+![image-20220802162745286](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20220802162745286-16594325943023.png)
+
+-d 是指定目录为当前目录。
+
+可以再添加多级菜单，选定打开的终端实例。
+
+更多命令行参数：[Windows 终端命令行参数 | Microsoft Docs](https://docs.microsoft.com/zh-cn/windows/terminal/command-line-arguments?tabs=windows)
+
 本人的Windows Terminal主要添加了CMD、Power Shell、Git Bash、Ubuntu这几个终端。~~具体的使用和配置已经非常人性化了，可自行摸索。~~
 
-更新：
+**更新：**
 
 摸了一段时间，发现主题还是好难看，又摸索了一下。
 
@@ -133,8 +161,6 @@ GitBash要关闭这个，创建~/.inputrc，添加：**set bell-style none**。�
 
 最后配置文件懒得放了，天天改。
 
-​
-
 ## Ubuntu
 
 ### 文件系统
@@ -172,7 +198,7 @@ $ pwd
 
 上面这里截取的命令可以看到，命令行提示跟默认的终端不一致，是因为我配置了zsh shell。这是非常建议使用的一个终端，非常强大（至少大神都是这么说的）。
 
-> ​目前常用的 Linux 系统和 OS X 系统的默认 Shell 都是 bash，但是真正强大的 Shell 是深藏不露的 zsh， 这货绝对是马车中的跑车，跑车中的飞行车，史称『终极 Shell』，但是由于配置过于复杂，所以初期无人问津，很多人跑过来看看 zsh 的配置指南，什么都不说转身就走了。直到有一天，国外有个穷极无聊的程序员开发出了一个能够让你快速上手的zsh项目，叫做「oh my zsh」，Github 网址是：<https://github.com/robbyrussell/oh-my-zsh。这玩意就像「X>天叫你学会 C++」系列，可以让你神功速成，而且是真的。
+> 目前常用的 Linux 系统和 OS X 系统的默认 Shell 都是 bash，但是真正强大的 Shell 是深藏不露的 zsh， 这货绝对是马车中的跑车，跑车中的飞行车，史称『终极 Shell』，但是由于配置过于复杂，所以初期无人问津，很多人跑过来看看 zsh 的配置指南，什么都不说转身就走了。直到有一天，国外有个穷极无聊的程序员开发出了一个能够让你快速上手的zsh项目，叫做「oh my zsh」，Github 网址是：<https://github.com/robbyrussell/oh-my-zsh。这玩意就像「X>天叫你学会 C++」系列，可以让你神功速成，而且是真的。
 ​
 安装也非常简单：
 
@@ -208,7 +234,8 @@ sh install.sh
 	4.zsh-com­ple­tions 插件需要将 autoload -U compinit && compinit 添加到.zshrc，输入命令可一键添加：
 	[ -z "`grep "autoload -U compinit && compinit" ~/.zshrc`" ] && echo "autoload -U compinit && compinit" >> ~/.zshrc
 	5.把需要启用的插件写入到配置文件中，使用 sed 命令一键操作：
-	sed -i '/^plugins=/c\plugins=(git sudo z zsh-syntax-highlighting zsh-autosuggestions zsh-completions colored-man-pages)' ~/.zshrc	6.最后应用配置
+	sed -i '/^plugins=/c\plugins=(git sudo z zsh-syntax-highlighting zsh-autosuggestions zsh-completions colored-man-pages)' ~/.zshrc	
+	6.最后应用配置
 	source ~/.zshrc
 ```
 
@@ -245,5 +272,4 @@ alias vncinit="vnclicense -add BQ24G-PDXE4-KKKRS-WBHZE-F5RCA"
 
 在玩的过程有碰到什么有意思的再补充吧。
 
-​
-​
+
