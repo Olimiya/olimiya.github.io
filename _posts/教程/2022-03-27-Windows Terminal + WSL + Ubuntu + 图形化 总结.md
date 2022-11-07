@@ -192,6 +192,27 @@ Windows上自带的终端来说还是powershell比较好用，虽然语法感觉
 $ Set-ExecutionPolicy RemoteSigned #允许执行脚本
 ```
 
+### 手动刷新环境变量
+
+制作一个命令RefreshEnv：
+
+```bash
+# 制作一个存放RefreshEnv这种小脚本的文件夹，添加到环境变量PATH。
+New-Item $env:USERPROFILE\Documents\bin -itemtype directory | Out-Null
+
+Set-ItemProperty `
+
+	-Path "HKCU:\Environment\" `
+	
+	-Name "Path" ` -Value ((Get-ItemPropertyValue -Path "HKCU:\Environment\" -Name "Path") +`
+	
+		";" + ($env:USERPROFILE) + "\Documents\bin;")
+		
+# 刷新环境变量脚本
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/chocolatey/choco/master/src/chocolatey.resources/redirects/RefreshEnv.cmd" -OutFile ("$env:USERPROFILE"+"\Documents\bin\RefreshEnv.cmd")
+
+```
+
 ### Windows包管理器
 
 Windows安装软件基本都是通过安装包方式，但繁多的小功能软件自行管理会显得很麻烦，所以如果有一个类似ubuntu的apt系统也挺好的。windows有一个自带winget，但是个人使用一直显示源报错，其中一个源是msstore，而微软商店在国内网络经常抽风。所以选择另一个管理器scoop。
