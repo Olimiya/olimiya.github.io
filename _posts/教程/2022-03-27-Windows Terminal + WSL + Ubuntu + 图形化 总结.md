@@ -1,7 +1,7 @@
 ---
 title: Windows Terminal + WSL + Ubuntu + 图形化 总结
 date: 2022-03-27 19:49
-categories: [工具]
+categories: [教程]
 tags: [Windows Terminal, WSL]
 ---
 
@@ -161,6 +161,139 @@ GitBash要关闭这个，创建~/.inputrc，添加：**set bell-style none**。�
 
 最后配置文件懒得放了，天天改。
 
+### 更新+3 管理员权限
+
+参考：[windows terminal使用管理员权限打开_qq_30262407的博客-CSDN博客_windows terminal 管理员](https://blog.csdn.net/qq_30262407/article/details/114921714)
+
+个人采用Gsudo方案：
+
+1. 安装Gsudo
+
+   ```bash
+   $ PowerShell -Command "Set-ExecutionPolicy RemoteSigned -scope Process; iwr -useb https://raw.githubusercontent.com/gerardog/gsudo/master/installgsudo.ps1 | iex"
+   $ Set-ExecutionPolicy RemoteSigned #允许执行脚本
+   $ Import-Module 'C:\Program Files (x86)\gsudo\gsudoModule.psd1' # 添加sudo别名
+   ```
+
+2. 配置WT的setting.json
+
+   ```json
+   // 这行改成这样
+   "commandline": "sudo powershell.exe",
+   ```
+
+## Powershell
+
+Windows上自带的终端来说还是powershell比较好用，虽然语法感觉更复杂。那也自定义增强一下。
+
+运行执行脚本：
+
+```bash
+$ Set-ExecutionPolicy RemoteSigned #允许执行脚本
+```
+
+### Windows包管理器
+
+Windows安装软件基本都是通过安装包方式，但繁多的小功能软件自行管理会显得很麻烦，所以如果有一个类似ubuntu的apt系统也挺好的。windows有一个自带winget，但是个人使用一直显示源报错，其中一个源是msstore，而微软商店在国内网络经常抽风。所以选择另一个管理器scoop。
+
+安装：
+
+> Scoop 默认使用普通用户权限，其本体和安装的软件默认会放在 %USERPROFILE%\scoop(即 C:\Users\用户名\scoop)，使用管理员权限进行全局安装 (-g) 的软件在 C:\ProgramData\scoop。如果有自定安装路径的需求，那么要提前设置好环境变量，否则后续再改不是一件容易的事情。
+
+所以先设置用户安装路径
+
+```bash
+$env:SCOOP='D:\Scoop'
+[Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+```
+
+然后以非管理员权限打开powershell
+
+```bash
+# Change execution policy
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+# Download and install scoop
+iwr -useb get.scoop.sh | iex
+# Add useful buckets (resembles repos in apt)
+scoop bucket add extras
+scoop bucket add versions
+```
+
+之后就可以`scoop install`安装包，比如`scoop install sudo`.
+
+### on-my-posh
+
+类似于zsh和oh-my-zsh（Linux装机必备），在powershell中获取类似主题体验。
+
+oh-my-posh新版本不能使用powershell的module安装方式，许多21年以前的博客安装说明已失效。以官方说明为准：[Windows  Oh My Posh](https://ohmyposh.dev/docs/installation/windows)
+
+安装：
+
+```bash
+# scoop
+scoop install https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/oh-my-posh.json
+# powershell脚本
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))
+```
+
+然后：
+
+1. 安装字体（Nerd字体），因为很多主题使用图标，需要图标字体支持。
+
+2. 配置字体到终端使用，用的是Windows Terminal在全局设置即可。
+
+3. 配置终端使用oh-my-posh.
+
+   ```bash
+   notepad $PROFILE
+   
+   # profile中输入：
+   oh-my-posh init pwsh | Invoke-Expression
+   ```
+
+配置和可能碰到的问题：
+
+```bash
+# 缺少这个可能导致上面$profile加载失败
+Install-Module -Name PSReadLine -AllowPrerelease -Force # PSReadLine
+# 如果上面这行出错，执行以下
+Install-Module -Name PackageManagement -Repository PSGallery -Force
+Install-Module -Name PowerShellGet -Repository PSGallery -Force
+# 重启终端
+Install-Module -Name Az.StorageSync -AllowPrerelease -AllowClobber -Force
+
+# posh-git 作用是powershell中集成git相关环境，帮助主题能够显示git项目的状态
+Install-Module posh-git -Scope CurrentUser 
+
+```
+
+为添加命令历史记录、tab补全、搜索历史记录等功能，配置profile文件，完整如下：
+
+```text
+Import-Module posh-git # 引入 posh-git
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\cobalt2.omp.json" | Invoke-Expression
+
+Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
+
+Set-PSReadlineKeyHandler -Key Tab -Function Complete # 设置 Tab 键补全
+Set-PSReadLineKeyHandler -Key "Ctrl+g" -Function MenuComplete # 设置 Ctrl+d 为菜单补全和 Intellisense
+Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo # 设置 Ctrl+z 为撤销
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward # 设置向上键为后向搜索历史记录
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward # 设置向下键为前向搜索历史纪录
+```
+
+上面可以看到主题配置，个人选择了cobalt2主题，主题选择可查看：[Themes  Oh My Posh](https://ohmyposh.dev/docs/themes).
+
+然后字体高亮上面可以配置$pshome\profile.ps1实现，个人不想折腾这个，直接使用Window Terminal自带的主题方案得了。
+
+还有一些像conda配置关联的问题，没碰到先不管了。
+
+参考：
+
+1. [Windows Terminal + PowerShell 的配置 - 丏谷  Miangu Blog (zhangtianrong.github.io)](https://zhangtianrong.github.io/2020/01/09/WT+POSH/)
+2. [Window终端 Powershell zsh同款 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/384591031)
+3. [Scoop 安装使用 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/489898732)
+
 ## Ubuntu
 
 ### 文件系统
@@ -271,5 +404,4 @@ alias vncinit="vnclicense -add BQ24G-PDXE4-KKKRS-WBHZE-F5RCA"
 ## 后述
 
 在玩的过程有碰到什么有意思的再补充吧。
-
 
