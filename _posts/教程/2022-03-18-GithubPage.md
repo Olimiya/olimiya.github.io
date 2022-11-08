@@ -28,7 +28,9 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
 bundle exec jekyll serve
 ```
 
+### 注意
 
+**开启HTTPS：**可以在github page的项目中：设置->Pages->Enforce HTTPS. 强制github page使用https.
 
 ## Github page + Hexo
 
