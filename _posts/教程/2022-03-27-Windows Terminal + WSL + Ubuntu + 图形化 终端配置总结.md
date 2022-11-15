@@ -477,7 +477,7 @@ sh install.sh
 ​​![在这里插入图片描述](https://img-blog.csdnimg.cn/3a9cb487114d4ab5ab1677d984561447.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
 ​
 
-## 图形用户界面
+## 服务器图形用户界面-远程桌面登录
 
 使用VNC的解决方案。
 
@@ -499,6 +499,251 @@ alias vncinit="vnclicense -add BQ24G-PDXE4-KKKRS-WBHZE-F5RCA"
 另外还有像xrdp+远程连接的解决方案，个人尝试后觉得比较卡，就不赘述了。
 
 还有类似于MobaXTerm软件的解决方案，内置了XServer，但跟上面xrdp一样卡，也不赘述了。
+
+
+
+**更新：** *之前一次弄到最后没什么精力了，所以将这部分偷懒了。有时间把这部分补充完整。*
+
+要远程控制ubuntu桌面，主要就是就是通过VNC或RDP协议。相关概念参考[ubuntu远程桌面连接方式(vnc、xrdp、vino、xorg等概念) – late哥哥笔记 (lategege.com)](https://www.lategege.com/?p=691).
+
+需要远程桌面登录肯定需要一个桌面系统，ubuntu桌面版自带gnome，ubuntu服务端默认没有桌面。关于ubuntu的桌面系统：
+
+> ubuntu的图形化界面主要有几种:unity\gnome\xfce\kde 其中unity在ubuntu早期版本中常用，新版本ubuntu默认桌面是gnome,而如果安装的是ubuntu server系统，需要在图形化操作，一般安装xfce，它非常轻量，kde在ubuntu中不常用。
+
+### VNC
+
+第一种最简单是安装的ubuntu带有默认的桌面系统，内置有VNC服务端，这里用的是WSL没有默认的桌面系统就不进行尝试了。同样的道理优先选择轻量级的xfce(不过即使是轻量级也有2-3G，穷人的辣鸡云服务器就不敢装了). VNC服务默认端口为5900端口，注意同时只能有一个vnc服务，端口占用无法共存。
+
+1. 安装桌面
+
+   ```bash
+   # 首先更新
+   sudo apt-get update
+   sudo apt-get upgrade
+   
+   # 安装要选择桌面管理环境gdm3或lightdm，这里选的轻量级lightdm
+   sudo apt-get install xubuntu-desktop 
+   # 这里有个小问题是安装会自动安装locate，会扫描磁盘建立索引方便查找文件，问题是在WSL里会把挂载的外部windows文件系统也一同扫描，速度可能相当慢，可使用以下方式省略扫描windows：add /mnt to PRUNEPATHS in /etc/updatedb.conf
+   # 或者尝试以下命令
+   sudo apt-get install xorg
+   sudo apt-get install xfce4
+   ```
+
+2. 安装VNC Server。这里的选择很多，VNC是一种协议，有许多实现版本，比如开源的vnc4server、tightvncserver，付费的realvncserver（有破解码）.
+
+   ```bash
+   # 多选一
+   sudo apt-get install vnc4server # 这个在默认源中没有，要在/etc/apt/sources.list中添加deb http://cn.archive.ubuntu.com/ubuntu/ bionic universe
+   
+   sudo apt-get install tightvncserver
+   
+   https://downloads.realvnc.com/download/file/vnc.files/VNC-Server-6.11.0-Linux-x64.deb
+   ```
+
+3. 启动
+
+   ```bash
+   vncserver
+   # 输出
+   You will require a password to access your desktops.
+   
+   Password:
+   Verify:
+   Would you like to enter a view-only password (y/n)? n
+   xauth:  file /home/olimi/.Xauthority does not exist
+   
+   New 'X' desktop is Olimi-PC-541:1
+   ```
+
+4. 配置。默认配置启动连接会一片灰白。
+
+   ```bash
+   vncserver -kill :1 # 结束前面启动的窗口1
+   # 备份原来的配置文件
+   mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
+   # 编辑新的配置文件
+   nano ~/.vnc/xstartup
+   # 输入以下内容
+   ```
+
+   ```sh
+   #!/bin/sh
+   
+   # Uncomment the following two lines for normal desktop:
+   unset SESSION_MANAGER
+   # exec /etc/X11/xinit/xinitrc
+   
+   [ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+   [ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+   xsetroot -solid grey
+   vncconfig -iconic &
+   x-terminal-emulator -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
+   startxfce4 &
+   ```
+
+   ```bash
+   # 授予可执行权限
+   chmod u+x ~/.vnc/xstartup
+   ```
+
+5. 重新启动
+
+   ```bash
+   vncserver # 或vncserver -geometry 1920x1080 :1
+   ```
+
+6. 使用VNC Viewer工具访问。[RealVNC](https://www.realvnc.com/en/connect/download/viewer/?spm=a2c4g.11186623.0.0.51f42d32DpaFkW)下载Viewer，还是付费软件好用，虽然只是server付费。输入：`IP:端口号`。VNC默认端口为5900，每建立一个连接，VNC 端口号 +1。比如第一个VNC窗口，开放的端口就是5901. 也可以用MobaXterm软件连接。
+
+   ![image-20221115221854928](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115213339061.png)
+
+   *（经典死老鼠）*
+
+### RDP
+
+关于RDP：
+
+> rdp是windows系统专用的远程连接方式，但是ubuntu等linux系统下可以通过移花接木的方式，也就是xrdp, xrdp本身不具备桌面服务功能，需要和图形化桌面配合，这个提供桌面能力的其实就是xorg，xorg在ubuntu中默认存在，所以通过xrdp连接远程桌面默认会选择xorg，xorg为xrdp提供桌面服务，xrdp本身提供远程连接能力。如果你安装了GNOME, 那xorg就将GNOME桌面远程提供给你，如果你安装了xfce,xorg就将xfce桌面提供给你。可以说xorg是远程桌面服务的中间件，但是xorg和gnome配合不是很好，往往会有问题，但是网上也有解决方案，最佳的配合还是xfce+xorg+xrdp，由于xorg是ubuntu默认存在的图形化能力，所以只要在ubuntu中安装上xrdp，如果你的桌面系统是xfce就能直接使用远程桌面。
+
+1. 安装桌面系统同上。
+
+2. 安装xrdp
+
+   ```bash
+   sudo apt-get install xrdp
+   ```
+
+3. 安装完成后，Xrdp服务将自动启动。没启动可以自行启动。
+
+   ```bash
+   sudo systemctl status xrdp # 查看状态
+   # WSL不能执行systemctl，可以使用service命令
+   sudo service xrdp status
+   sudo service xrdp start
+   ```
+
+   ![img](https://img2020.cnblogs.com/blog/1234034/202009/1234034-20200930083230253-965519395.jpg)
+
+4. 默认情况下，Xrdp会读取使用`/etc/ssl/private/ssl-cert-snakeoil.key`文件，但该文件仅由ssl-cert组的成员读取。 因此你需要运行以下命令以将`xrdp`用户添加到ssl-cert组：
+
+   ```bash
+   sudo adduser xrdp ssl-cert  # 添加用户组
+   sudo systemctl restart xrdp # 重启服务
+   ```
+
+5. Xrdp配置文件位于：`/etc/xrdp/xrdp.ini`。可自行配置。
+
+6. *可选。远程桌面连接测试时黑屏，闪退：`rdp session has been disconnected.` 解决：
+
+   ```bash
+   echo "startxfce4" > ~/.Xsession
+   chmod +x ~/.Xsession
+   sudo service xrdp restart
+   ```
+
+windows可以通过远程桌面客户端连接了，xrdp的端口和rdp一样都是**3389**，所以可以直接使用windows自带的远程桌面连接工具，连接口弹出窗口，默认选中了xorg，输入ubuntu用户名密码就可以登录. 
+
+> 当然，xrdp不仅可以选择xorg，还能选择vnc-any，也就是选择了这个，你可以连接vnc服务端，也就是 xrdp不仅可以和xorg配合，也能和vnc4server、vino、tightvncserver等vnc服务端配置使用。
+
+![image-20221115213339061](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115220102750.png)
+
+（这里因为没指定分辨率，而电脑屏幕是4k屏，没放缩的情况下显得很小）
+
+### X11+SSH转发
+
+X Window System 常被简称为X11或X，其功能包括窗口的绘制、移动，以及与鼠标、键盘等输入设备的交互。X Window采用的是X11协议。X11 中的 X 指的就是 X 协议；11 指的是采用 X 协议的第 11 个版本。
+
+关于什么是X11
+
+> 它采用C/S模型：一个X server 和多个应用程序（client）通信。server接收client的请求绘制窗口，并将来自鼠标、键盘等设备的输入传递给client。
+> X server和client可以位于同一计算机上，就类似于平时使用的Windows操作系统；当X server和client不在同一计算机时，使用本地的X server 进行绘制、交互，就变成了远程桌面。
+> 举个例子：前者是你在披萨店点了一份披萨，店员在你旁边帮你做好拿给你（这家店相当于同一台计算机）；后者是你在网上叫了一份披萨，店员接单后到你家帮你做了一份披萨（注意：VNC是使用店里厨房，做好给你送过来；X转发是使用你家厨房做披萨）
+
+一般Xserver默认不允许直接网络传输，这时候就可以借助ssh通道进行显示。进一步的原理：
+
+![sshforwarding.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/630a6cf2d5284c6cbf98a43bb5b8d567~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.image?)
+
+流程：
+
+1. sshd接受请求建立连接，并将本次ssh会话的DISPLAY指定为`hostname:10.0`，这里需要注意的是DISPLAY环境变量格式为`hostname:displaynumber.screennumber`,若hostname为空，则表示Xserver运行在本机，当以tcp连接时，displaynumber的值为实际连接的端口减去6000，即本次的监听端口为6010，而6010的监听者就是sshd程序。
+2. 在ssh会话中执行图形程序，ssh客户端本质上只负责输入和显示，程序的执行在sshd上。假设在命令行上运行xclock，这在pstree查看sshd进程可以看到`sshd(822369)---bash(822539)---xclock(1014618)`。xclock的父进程为bash。该程序与6010进行TCP通信，将X11协议数据发送到6010,sshd再将该数据放入ssh通道与ssh客户端进行通信。
+3. ssh运行在客户端，该端同时运行Xserver.ssh与Xserver建立连接，将ssh通道中的X11协议数据发送到Xserver。
+
+![X11 转发设置](https://goteleport.com/blog/_next/static/media/x11-forwarding-setup.c67f3da7.png)
+
+**实践：**最简单的方案就是使用MobaXterm，自带内置的X Server，可以直接接管远程系统的图形化绘制请求。在连接ssh时默认会勾选x11-forwarding，就可以接收x11转发请求。剩下的是X11 Client端的配置。
+
+![image-20221115222834486](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115221854928.png)
+
+![image.png](https://bbs-img.huaweicloud.com/blogs/img/20220615/1655256876815937924.png)
+
+如果登录时显示这个界面，就需要配置连接的远程客户端：
+
+1. 安装X认证包：`apt install xorg-x11-xauth`
+
+2. 打开ssh转发：编辑`/etc/ssh/sshd_config`：
+
+   ```
+   #AllowAgentForwarding yes
+   AllowTcpForwarding yes   #这里打开
+   #GatewayPorts no
+   X11Forwarding yes      #这里原本就是打开的
+   #X11DisplayOffset 10
+   #X11UseLocalhost yes
+   #PermitTTY yes
+   ```
+
+   ```bash
+   service sshd restart
+   ```
+
+以上是看来的未亲测。用云服务器测试（未安装桌面，小、穷、破），连进去就可以用：
+
+![image-20221115220102750](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115222834486.png)
+
+以下是个人配置：
+
+```bash
+~ ⌚ 22:28:52
+sudo dpkg -l | grep x11
+ii  libx11-6:amd64                        2:1.6.9-2ubuntu1.2                amd64        X11 client-side library
+ii  libx11-data                           2:1.6.9-2ubuntu1.2                all          X11 client-side library
+ii  libx11-xcb1:amd64                     2:1.6.9-2ubuntu1.2                amd64        Xlib/XCB interface library
+ii  x11-apps                              7.7+8                             amd64        X applications
+ii  x11-common                            1:7.7+19ubuntu14                  all          X Window System (X.Org) infrastructure
+ii  x11-utils                             7.7+5                             amd64        X11 utilities
+rc  x11-xserver-utils                     7.7+8                             amd64        X server utilities
+
+~ ⌚ 22:29:07
+$ cat /etc/ssh/sshd_config | grep AllowTcpForwarding
+#AllowTcpForwarding yes
+#       AllowTcpForwarding no
+
+```
+
+使用命令测试：
+
+```bash
+xclock
+# 如果找不到则安装
+sudo apt-get install x11-apps
+```
+
+![image-20221115223152999](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115223152999.png)
+
+**总结：**可以发现，这种途径是使用远程系统，需要使用GUI，但系统默认未安装图形界面时，最简便的途径。特别是一般情况下服务端空间宝贵，资源珍贵，使用GUI机会少，用X11转发流量是非常有性价比的行为。
+
+References：
+
+1. [ubuntu20.10中设置桌面共享的三种方式(任选其一) - 星宇x - 博客园 (cnblogs.com)](https://www.cnblogs.com/xingyu666/p/14132923.html#autoid-1-0-0)
+2. [如何在Ubuntu 20.04上安装Xrdp服务器 | myfreax](https://www.myfreax.com/how-to-install-xrdp-on-ubuntu-20-04/)
+3. [ubuntu远程桌面连接方式(vnc、xrdp、vino、xorg等概念) – late哥哥笔记 (lategege.com)](https://www.lategege.com/?p=691#comment-1998)
+4. [Ubuntu 18.04 中安装 Xfce 和 SVN 开启远程桌面访问 | Ethan's Blog - 记录和思考 (ethanblog.com)](https://ethanblog.com/tips/enable-remote-desktop-in-ubuntu-18-04-with-xface-and-svn.html)
+5. [(11条消息) 【华为云】用VNC远程连接Ubuntu20.04图形界面_Desny的博客-CSDN博客_vnc远程连接ubuntu桌面](https://blog.csdn.net/weixin_40908748/article/details/125431387)
+6. [通过VNC搭建Ubuntu 18.04和20.04图形界面 (aliyun.com)](https://help.aliyun.com/document_detail/59330.html)
+7. [remote desktop - Xrdp on Ubuntu 20.04 - Ask Ubuntu](https://askubuntu.com/questions/1245020/xrdp-on-ubuntu-20-04)
+8. [忘掉VNC/RDP，拿起手中的MobaXterm轻松上手远程桌面 - 思兼 - 博客园 (cnblogs.com)](https://www.cnblogs.com/sjqlwy/p/mobaxterm.html)
+9. [ssh X11 Forwarding机制浅析 - 掘金 (juejin.cn)](https://juejin.cn/post/7093898366475567118)
+10. [您需要了解的有关 X11 转发的信息 (goteleport.com)](https://goteleport.com/blog/x11-forwarding/)
 
 ## 后述
 
