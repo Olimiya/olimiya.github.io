@@ -1,0 +1,1119 @@
+<!DOCTYPE html><html lang="zh-CN" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.3.1" /><meta property="og:title" content="Qt-统一样式爬的坑（参考统一样式的思路）" /><meta name="author" content="Olimi" /><meta property="og:locale" content="zh_CN" /><meta name="description" content="写在前面" /><meta property="og:description" content="写在前面" /><link rel="canonical" href="https://olimiya.github.io/posts/Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91-%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF/" /><meta property="og:url" content="https://olimiya.github.io/posts/Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91-%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF/" /><meta property="og:site_name" content="Olimi" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2020-02-10T17:23:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Qt-统一样式爬的坑（参考统一样式的思路）" /><meta name="twitter:site" content="@olimi861921648" /><meta name="twitter:creator" content="@olimi861921648" /><meta name="google-site-verification" content="g9ctzJLPpJ3wh5a6Bk6kvp7UAB5N22zIe2V2PZE72TA" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Olimi","url":"https://olimiya.github.io/"},"dateModified":"2020-02-10T17:23:00+08:00","datePublished":"2020-02-10T17:23:00+08:00","description":"写在前面","headline":"Qt-统一样式爬的坑（参考统一样式的思路）","mainEntityOfPage":{"@type":"WebPage","@id":"https://olimiya.github.io/posts/Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91-%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF/"},"url":"https://olimiya.github.io/posts/Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91-%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF/"}</script><title>Qt-统一样式爬的坑（参考统一样式的思路） | Olimi</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Olimi"><meta name="application-name" content="Olimi"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="//at.alicdn.com/t/font_2440352_86vrobdp9vu.css"><link rel="stylesheet" href="//at.alicdn.com/t/font_2451185_tgvgeuen2lh.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@5.2/distr/fira_code.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get MODE_ATTR() { return "data-mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } static get ID() { return "mode-toggle"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } let self = this; /* always follow the system prefers */ this.sysDarkPrefers.addEventListener("change", () => { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.notify(); }); } /* constructor() */ get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; } get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer)) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } setDark() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_ATTR); sessionStorage.removeItem(ModeToggle.MODE_KEY); } /* Notify another plugins that the theme mode has changed */ notify() { window.postMessage({ direction: ModeToggle.ID, message: this.modeStatus }, "*"); } } /* ModeToggle */ const toggle = new ModeToggle(); function flipMode() { if (toggle.hasMode) { if (toggle.isSysDarkPrefer) { if (toggle.isLightMode) { toggle.clearMode(); } else { toggle.setLight(); } } else { if (toggle.isDarkMode) { toggle.clearMode(); } else { toggle.setDark(); } } } else { if (toggle.isSysDarkPrefer) { toggle.setLight(); } else { toggle.setDark(); } } toggle.notify(); } /* flipMode() */ </script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" class="mx-auto"> <img src="/avatar.jpg" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Olimi</a></div><div class="site-subtitle font-italic">来者是客</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="iconfont icon-home ml-xl-3 mr-xl-3 unloaded"></i> <span>首页</span> </a><li class="nav-item"> <a href="/subdomain/" class="nav-link"> <i class="iconfont icon-buywebhostingstep1domain ml-xl-3 mr-xl-3 unloaded"></i> <span>子域</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="iconfont icon-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>分类</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="iconfont icon-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>标签</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="iconfont icon-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>归档</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="iconfont icon-info ml-xl-3 mr-xl-3 unloaded"></i> <span>关于</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <button class="mode-toggle btn" aria-label="Switch Mode"> <i class="iconfont icon-adjust1"></i> </button> <span class="icon-border"></span> <a href="https://github.com/olimiya" aria-label="github" target="_blank" rel="noopener"> <i class="iconfont icon-github"></i> </a> <a href="https://twitter.com/olimi861921648" aria-label="twitter" target="_blank" rel="noopener"> <i class="iconfont icon-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['olimi861921648','gmail.com'].join('@')" aria-label="email" > <i class="iconfont icon-mail"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="iconfont icon-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> 首页 </a> </span> <span>Qt-统一样式爬的坑（参考统一样式的思路）</span> </span> <i id="sidebar-trigger" class="iconfont icon-bars"></i><div id="topbar-title"> 文章</div><i id="search-trigger" class="iconfont icon-search"></i> <span id="search-wrapper" class="align-items-center"> <i class="iconfont icon-search"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="搜索..."> </span> <span id="search-cancel" >取消</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Qt-统一样式爬的坑（参考统一样式的思路）</h1><div class="post-meta text-muted"><div> 作者 <em> <a href="https://olimiya.github.io/">Olimi</a> </em></div><div class="d-flex"><div> <span> 发表于 <em class="timeago" data-ts="1581326580" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2020-02-10 </em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="2475 字"> <em>13 分钟</em>阅读</span> <span id="busuanzi_container_page_pv"> 阅读量:<span id="busuanzi_value_page_pv"></span> </span></div></div></div><div class="post-content"><h2 id="写在前面"><span class="mr-2">写在前面</span><a href="#写在前面" class="anchor text-muted"><i class="iconfont icon-hashtag"></i></a></h2><p>嗯…在后后面项目经验中，<strong>这是一份已经落后的文档了。</strong> 因为如果在一开始就持有保持统一的思想跟良好的设计原则，这些问题并不会出现。但也是一份经验教训吧。</p><h2 id="样式标准参考"><span class="mr-2">样式标准（参考）</span><a href="#样式标准参考" class="anchor text-muted"><i class="iconfont icon-hashtag"></i></a></h2><p>统一标准： 字体全部设为微软雅黑，11号 按钮统一大小93,28. 对话框统一： 标题栏需添加自定义标题栏（自定义标题栏的接口会给出，可能如MAP_GUI_MainWindowTitleBar或MAP_GUI_CustomTitleBar）（参加下图例子）设置icon和标题，同时要设置无边框； 对话框要设置边界，样式同下图，把界面里定义的Frame添加到QSS（TotalQSS.qss）中,同时界面都添加该QSS文件着色。 <img data-src="https://img-blog.csdnimg.cn/20200210171738892.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> <img data-src="https://img-blog.csdnimg.cn/20200210171806400.png" alt="在这里插入图片描述" data-proofer-ignore><img data-src="https://img-blog.csdnimg.cn/20200210171812275.png" alt="在这里插入图片描述" data-proofer-ignore> 用一个例子详细说明： 如我们需要一个对话框Dialog（绝大多数我们只需要QMainWindow和Qdialog），那这个ui文件的组织形式应如下同： <img data-src="https://img-blog.csdnimg.cn/20200210171838485.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> 第一级是新建的QDialog: SE_NZ_Dialog 第二级是一个Qframe用来装要使用的控件，目的是统一最后的界面样式。 第三级包括一个Layout布局和一个TitleBarWidget（这个即上面说的自定义标题栏，先拖一个Widget到顶部，然后提升为自定义标题栏的类即可）。 所有界面设计放到Layout布局中即可。</p><p>成品图： <img data-src="https://img-blog.csdnimg.cn/20200210171913575.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> 其中各部分的布局的样式如下： SE_NZ_Dialog的布局： <img data-src="https://img-blog.csdnimg.cn/202002101719285.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> QFrame的布局： <img data-src="https://img-blog.csdnimg.cn/20200210171940407.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> 自己的Layout的布局： <img data-src="https://img-blog.csdnimg.cn/20200210171948836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore></p><p>此外大部分界面通用的底部按钮： <img data-src="https://img-blog.csdnimg.cn/20200210171957926.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> 由于标题栏都是统一的自定义风格，所以还要针对这个进行一些设置（自定义标题栏这里就不展示了） 说完ui文件的操作流程，说说cpp里面的通用操作： <img data-src="https://img-blog.csdnimg.cn/20200210172123341.png" alt="在这里插入图片描述" data-proofer-ignore> ui-&gt;m_titleBar三个函数见自定义标题栏的接口，主要是调整样式跟设置icon，text。 然后还要额外设置FrameLess（这样才能使用自定义标题栏）。 由于设置了FrameLess的界面是不能伸缩大小的了，所以如有这个需求可在ui里面勾选一个属性： <img data-src="https://img-blog.csdnimg.cn/20200210172131288.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" data-proofer-ignore> 所有需要用的样式设计（如颜色，大小调整，背景等），都通过同一个（或者同一类）qss文件进行调整，然后加载设置。QSS会给与一份较为完整的，需要调整什么控件在里面找即可，语法同CSS。 通用，必须的添加则有： <img data-src="https://img-blog.csdnimg.cn/20200210172148475.png" alt="在这里插入图片描述" data-proofer-ignore> 如上面例子，添加的控件即m_normalFrame, 第二级的Qframe。</p><p>最后，除了标准通用的模板，要做出一个好看的界面还是需要耐心一遍遍的调整：） 希望有了这个通用的框架，能帮助更好的开发出非常好看的界面^_^.</p><p>下面是附赠的一份QSS 汇总（CSDN的资源附带是枕芯坑…（审核通过了，附带<a href="https://download.csdn.net/download/Alezan/12148014">传送门</a>，免费的））</p><div class="language-css highlighter-rouge"><div class="code-header"> <span data-label-text="CSS"><i class="iconfont icon-code small"></i></span> <span class="code-header-right"><button class="button-copy" aria-label="copy" title-succeed="已复制！"><i class="iconfont icon-copy"></i></button></span></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+</pre><td class="rouge-code"><pre><span class="c">/**********按钮**********/</span>
+<span class="nt">QPushButton</span><span class="p">{</span>
+        <span class="nl">border-radius</span><span class="p">:</span> <span class="m">4px</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">30px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="nd">:enabled</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="o">:!</span><span class="nt">enabled</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">120</span><span class="p">,</span> <span class="m">120</span><span class="p">,</span> <span class="m">120</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nd">:enabled:hover</span><span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nd">:enabled:pressed</span><span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">51</span><span class="p">,</span> <span class="m">113</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowPropertyShowPtn</span><span class="o">,</span>  
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowSelectionShowPtn</span><span class="o">,</span> 
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowStructureShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowCalculateShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowDesignShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowTopCalculateShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowResultShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowChartShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowGeometryPropertyShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowPropertyHelpPtn</span><span class="o">,</span>  
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowSelectionHelpPtn</span><span class="o">,</span> 
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowStructureHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowCalculateHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowDesignHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowTopCalculateHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowResultHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowChartHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowGeometryPropertyHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowPropertySettingPtn</span><span class="o">,</span>  
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowSelectionSettingPtn</span><span class="o">,</span> 
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowStructureSettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowCalculateSettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowDesignSettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowTopCalculateSettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowResultSettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowChartSettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_MainWindowGeometryPropertySettingPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowPropertyHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowSelectionHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowStructureHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowWeightHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_weightRecommendPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateBottomNodeHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopCalculateHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateResultHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowGeometryHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_synthesizeRecommendPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateHighValueHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowPropertyShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowSelectionShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowStructureShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowWeightShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateBottomNodeShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopCalculateShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateResultShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SubWindowGeometryShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateHighValueShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopStandardValuePtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopLevelValuePtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateBottomValuePtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateBottomNodeNamePtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopADCShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateVagueShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateSEAShowPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopADCValuePtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateVagueValuePtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateVagueHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateSEAHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopStandardShowLevelsPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopShowLevelsPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopsisSortPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_CalculateTopADCHelpPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_ModelInputShowBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_LearningShowBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_ParameterBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_ModelOutputShowBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_TestChoiceShowBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_VARecommendPtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_ModelSaveShowBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SetMatrixDialogAddButton</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#m_SetMatrixDialogDeleteButton</span>
+<span class="nt">QPushButton</span><span class="nf">#pushButton_filePath</span> <span class="p">{</span>
+        <span class="nl">min-width</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>  
+        <span class="nl">min-height</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>  
+        <span class="nl">background-color</span><span class="p">:</span> <span class="nb">transparent</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nf">#m_FilePathBtn</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">180</span><span class="p">,</span> <span class="m">180</span><span class="p">,</span> <span class="m">180</span><span class="p">);</span>
+        <span class="nl">border-radius</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">2px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="nf">#m_FilePathBtn</span><span class="nd">:hover</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">220</span><span class="p">,</span> <span class="m">220</span><span class="p">,</span> <span class="m">220</span><span class="p">);</span>
+        <span class="nl">border-top</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+        <span class="nl">border-left</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+        <span class="nl">border-right</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+        <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="nf">#m_FilePathBtn</span><span class="nd">:pressed</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nf">#modelPathPreBtn</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#modelPathBtn</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nf">#modelPathPreBtn</span><span class="nd">:enabled:hover</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#modelPathBtn</span><span class="nd">:enabled:hover</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nf">#modelPathPreBtn</span><span class="nd">:enabled:pressed</span><span class="o">,</span>
+<span class="nt">QPushButton</span><span class="nf">#modelPathBtn</span><span class="nd">:enabled:pressed</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">51</span><span class="p">,</span> <span class="m">113</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QPushButton</span><span class="nf">#m_FilePtn</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">87</span><span class="p">,</span> <span class="m">154</span><span class="p">);</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">28px</span><span class="p">;</span>
+        <span class="nl">min-width</span><span class="p">:</span> <span class="m">85px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="nf">#m_FilePtn</span><span class="nd">::menu-indicator</span> <span class="p">{</span>
+        <span class="py">image</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="nf">#m_FilePtn</span><span class="nd">:hover</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">51</span><span class="p">,</span> <span class="m">102</span><span class="p">,</span> <span class="m">153</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QPushButton</span><span class="nf">#m_FilePtn</span><span class="nd">:hover</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********工具按钮**********/</span>
+<span class="nt">QToolButton</span>  <span class="p">{</span> 
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">transparent</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="nt">QToolButton</span><span class="nd">:enabled:hover</span><span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">QToolButton</span><span class="nd">:enabled:pressed</span><span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/**********菜单栏**********/</span>
+<span class="nt">QMenuBar</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QMenuBar</span><span class="nd">::item</span> <span class="p">{</span>
+        <span class="nl">padding</span><span class="p">:</span> <span class="m">5px</span> <span class="m">10px</span> <span class="m">5px</span> <span class="m">10px</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">transparent</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QMenuBar</span><span class="nd">::item:enabled</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">227</span><span class="p">,</span> <span class="m">234</span><span class="p">,</span> <span class="m">242</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QMenuBar</span><span class="nd">::item</span><span class="o">:!</span><span class="nt">enabled</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QMenuBar</span><span class="nd">::item:enabled:selected</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="p">,</span> <span class="m">255</span><span class="p">,</span> <span class="m">255</span><span class="p">,</span> <span class="m">40</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********文本编辑框**********/</span>
+<span class="nt">QTextEdit</span> <span class="p">{</span>
+        <span class="nl">border-radius</span><span class="p">:</span> <span class="m">2px</span><span class="p">;</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QTextEdit</span><span class="nd">:enabled</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QTextEdit</span><span class="nd">:enabled:hover</span><span class="o">,</span> <span class="nt">QLineEdit</span><span class="nd">:enabled:focus</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QTextEdit</span><span class="o">:!</span><span class="nt">enabled</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c">/**********输入框**********/</span>
+<span class="nt">QLineEdit</span> <span class="p">{</span>
+        <span class="nl">border-radius</span><span class="p">:</span> <span class="m">2px</span><span class="p">;</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">black</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QLineEdit</span><span class="nd">:enabled:focus</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QLineEdit</span><span class="o">:!</span><span class="nt">enabled</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********导航表格**********/</span>
+<span class="nt">QTreeWidget</span><span class="p">{</span>
+        <span class="nl">background-color</span><span class="p">:</span><span class="n">rgba</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">black</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QTreeWidget</span><span class="nd">::Item:hover</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">51</span><span class="p">,</span> <span class="m">102</span><span class="p">,</span> <span class="m">153</span><span class="p">);</span> 
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">252</span><span class="p">,</span> <span class="m">252</span><span class="p">,</span> <span class="m">252</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QTreeWidget</span><span class="nd">::item:selected</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">252</span><span class="p">,</span> <span class="m">252</span><span class="p">,</span> <span class="m">252</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********下拉列表**********/</span>
+<span class="nt">QComboBox</span> <span class="p">{</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+        <span class="nl">border-radius</span><span class="p">:</span> <span class="m">4px</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QComboBox</span><span class="nd">::drop-down</span> <span class="p">{</span>
+        <span class="nl">width</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+        <span class="nl">border-radius</span><span class="p">:</span><span class="m">3px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QComboBox</span><span class="nd">::drop-down:hover</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QComboBox</span> <span class="nt">QAbstractItemView</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">3px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">247</span><span class="p">,</span> <span class="m">248</span><span class="p">);</span>
+        <span class="nl">outline</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QComboBox</span> <span class="nt">QAbstractItemView</span><span class="nd">::item</span> <span class="p">{</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">175</span><span class="p">,</span> <span class="m">175</span><span class="p">,</span> <span class="m">175</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QComboBox</span> <span class="nt">QAbstractItemView</span><span class="nd">::item:selected</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">86</span><span class="p">,</span> <span class="m">135</span><span class="p">);</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">242</span><span class="p">,</span> <span class="m">242</span><span class="p">,</span> <span class="m">242</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********表格**********/</span>
+<span class="nt">QTableWidget</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">);</span>
+        <span class="py">alternate-background-color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">QTableView</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">);</span>
+        <span class="py">alternate-background-color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/**********表头**********/</span>
+<span class="nt">QHeaderView</span><span class="p">{</span>
+        <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QHeaderView</span><span class="nd">::section:horizontal</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">);</span>
+        <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QHeaderView</span><span class="nd">::section:vertical</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">);</span>
+        <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********左上角按钮**********/</span>
+<span class="nt">QTableCornerButton</span><span class="nd">::section</span><span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********菜单**********/</span>
+<span class="nt">QMenu</span><span class="p">{</span>
+		<span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">236</span><span class="p">,</span> <span class="m">237</span><span class="p">,</span> <span class="m">238</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QMenu</span><span class="nd">::item:enabled</span> <span class="p">{</span>
+        <span class="nl">color</span><span class="p">:</span><span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QMenu</span><span class="nd">::item</span><span class="o">:!</span><span class="nt">enabled</span> <span class="p">{</span>
+		<span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">,</span> <span class="m">155</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QMenu</span><span class="nd">::item:enabled:selected</span> <span class="p">{</span>
+		<span class="nl">color</span><span class="p">:</span><span class="nb">rgb</span><span class="p">(</span><span class="m">255</span><span class="p">,</span><span class="m">255</span><span class="p">,</span><span class="m">255</span><span class="p">);</span>
+		<span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">76</span><span class="p">,</span> <span class="m">141</span><span class="p">,</span> <span class="m">174</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********对话框**********/</span>
+<span class="nt">QDialog</span> <span class="p">{</span>
+		<span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">,</span> <span class="m">247</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="c">/**********浮动窗口**********/</span>
+<span class="nt">QDockWidget</span><span class="o">&gt;</span><span class="nt">QWidget</span><span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">236</span><span class="p">,</span> <span class="m">237</span><span class="p">,</span> <span class="m">238</span><span class="p">);</span> 
+<span class="p">}</span>
+
+<span class="c">/**********日记列表**********/</span>
+<span class="nt">QListWidget</span> <span class="p">{</span>
+	<span class="nl">border</span><span class="p">:</span><span class="m">1px</span> <span class="nb">solid</span> <span class="no">gray</span><span class="p">;</span> <span class="nl">color</span><span class="p">:</span><span class="no">black</span><span class="p">;</span> 
+<span class="p">}</span>
+<span class="nt">QListWidget</span><span class="nd">::Item</span> <span class="p">{</span>
+	<span class="nl">padding-top</span><span class="p">:</span><span class="m">-2px</span><span class="p">;</span> <span class="nl">padding-bottom</span><span class="p">:</span><span class="m">-1px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c">/*QListWidget::Item:hover {
+	background:skyblue;padding-top:0px; padding-bottom:0px; 
+}
+QListWidget::item:selected {
+	background:yellow; color:red;
+}
+QListWidget::item:selected:!active {
+	border-width:0px;background:lightGray;
+}*/</span>
+
+<span class="c">/**********微调器**********/</span>
+<span class="c">/*QSpinBox {
+        border-radius: 4px;
+        background: rgb(252, 252, 252);
+}
+QSpinBox:enabled {
+        color: rgb(252, 252, 252);
+}
+QSpinBox:enabled:hover, :enabled:focus {
+        color: rgb(255, 255, 255);
+}
+QSpinBox:!enabled {
+        color: rgb(65, 65, 65);
+        background: transparent;
+}
+QSpinBox::up-button {
+        width: 18px;
+        height: 12px;
+        border-top-right-radius: 4px;
+        background: transparent;
+        border-image: url(:/new/icon/icon/arrow up.png);
+}
+QSpinBox::up-button:!enabled {
+        border-left: 1px solid gray;
+        background: transparent;
+}
+QSpinBox::up-button:enabled:hover {
+        background: rgb(76, 141, 174);
+}
+QSpinBox::down-button {
+        width: 18px;
+        height: 12px;
+        border-bottom-right-radius: 4px;
+        border-image: url(:/new/icon/icon/arrow down.png);
+}
+QSpinBox::down-button:!enabled {
+        border-left: 1px solid gray;
+        background: transparent;
+}
+QSpinBox::down-button:enabled:hover {
+        background: rgb(76, 141, 174);
+}*/</span>
+
+<span class="c">/**********主页面**********/</span>
+<span class="nt">QMainWindow</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********主窗体**********/</span>
+<span class="nt">QGraphicsView</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********状态栏**********/</span>
+<span class="nt">QStatusBar</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">241</span><span class="p">,</span> <span class="m">241</span><span class="p">,</span> <span class="m">241</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********属性栏**********/</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowPropertyFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowSelectionFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowStructureFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowWeightFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowGeometryFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateTopCalculateFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateTopADCFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateVagueFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateSEAFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateBottomNodeFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateResultFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateHighValueFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_TestChoiceFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ParameterFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_LearningFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ModelOutputFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ModelInputFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ModelSaveFrame</span> <span class="p">{</span>
+         <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">210</span><span class="p">,</span> <span class="m">210</span><span class="p">,</span> <span class="m">210</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowProperty</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowPropertyWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowSelectionWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowStructureWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowWeightWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubWindowGeometryWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculatePropertyFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateTopCalculateWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateTopADCWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateBottomNodeWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateResultWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CalculateHighValueWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_TestChoiceWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ParameterWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_LearningWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ModelOutputWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ModelInputWidget</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ModelSaveWidget</span> <span class="p">{</span>
+         <span class="nl">background</span><span class="p">:</span> <span class="n">rgba</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/************普通Frame***********/</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_DatabaseWizardImport</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_DatabaseWizardImportDataTable</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_DatabaseWizardSetting</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_ImportFromTXT_Step1</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_ImportFromTXT_Step2</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_ImportFromTXT_Step3</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#SE_DLG_MessageBoxFrame</span> <span class="p">{</span>
+    <span class="nl">border</span><span class="p">:</span> <span class="m">0.5px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">57</span><span class="p">,</span> <span class="m">157</span><span class="p">);</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">,</span> <span class="m">235</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c">/**********bannerPixmap**********/</span>
+<span class="nt">QFrame</span><span class="nf">#bannerPixmap2</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nt">QFrame</span><span class="nf">#SQLFrame</span> <span class="p">{</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">240</span><span class="p">,</span> <span class="m">240</span><span class="p">,</span> <span class="m">240</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/********所有对话框的border设置*************/</span>
+<span class="nt">QFrame</span><span class="nf">#m_newProjectFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_addDataBaseFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_openDataBaseFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_editDataBaseFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_newDataTableFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_editDataTableFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_overViewFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_AHPFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_expertFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ChainFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_CriticFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_SubObjectiveFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_normalFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_levelSettingFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ppFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_matrixFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_recommendManageFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_recommendPrePocessFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_subjectiveFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_linearInterFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_vagueFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_standardLevelFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_powerFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ADCFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_distributionPlotFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_nodeViewConfigFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_reportFrame</span><span class="o">,</span>
+<span class="nt">QFrame</span><span class="nf">#m_ganttFrame</span> <span class="p">{</span>
+        <span class="nl">border-left</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">57</span><span class="p">,</span> <span class="m">157</span><span class="p">);</span>
+        <span class="nl">border-right</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">57</span><span class="p">,</span> <span class="m">157</span><span class="p">);</span>
+        <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">57</span><span class="p">,</span> <span class="m">157</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">236</span><span class="p">,</span> <span class="m">237</span><span class="p">,</span> <span class="m">238</span><span class="p">);</span>   
+<span class="p">}</span>
+
+<span class="c">/**********弹出对话框*********/</span>
+<span class="nt">QFrame</span><span class="nf">#bottomFrame</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********进度条**********/</span>
+<span class="c">/*QProgressBar::chunk {
+        color: rgb(255, 255, 255);
+        background: rgb(30, 144, 255);
+}*/</span>
+
+<span class="c">/**********页签项**********/</span>
+<span class="nt">QTabWidget</span><span class="nd">::pane</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">236</span><span class="p">,</span> <span class="m">237</span><span class="p">,</span> <span class="m">238</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QTabWidget</span><span class="nd">::tab-bar</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QFrame</span><span class="nf">#m_RibbornBar</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">87</span><span class="p">,</span> <span class="m">154</span><span class="p">);</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QTabBar</span><span class="nf">#m_RibbornTab</span><span class="nd">::tab</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">87</span><span class="p">,</span> <span class="m">154</span><span class="p">);</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">28px</span><span class="p">;</span>
+        <span class="nl">min-width</span><span class="p">:</span> <span class="m">75px</span><span class="p">;</span>
+        <span class="nl">padding-left</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+        <span class="nl">padding-right</span><span class="p">:</span> <span class="m">5px</span><span class="p">;}</span>
+        <span class="nt">QTabBar</span><span class="nf">#m_RibbornTab</span><span class="nd">::tab:hover</span> <span class="p">{</span><span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">51</span><span class="p">,</span> <span class="m">102</span><span class="p">,</span> <span class="m">153</span><span class="p">);}</span>
+        <span class="nt">QTabBar</span><span class="nf">#m_RibbornTab</span><span class="nd">::tab:selected</span> <span class="p">{</span><span class="nl">color</span><span class="p">:</span><span class="nb">rgb</span><span class="p">(</span><span class="m">43</span><span class="p">,</span> <span class="m">87</span><span class="p">,</span> <span class="m">154</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">,</span> <span class="m">225</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/*********抽象模板********/</span>
+<span class="nt">QAbstractItemView</span><span class="nd">::item</span> <span class="p">{</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QAbstractItemView</span><span class="nd">::item</span><span class="o">!</span><span class="nt">enabled</span> <span class="p">{</span>
+        <span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+        <span class="nl">color</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">175</span><span class="p">,</span> <span class="m">175</span><span class="p">,</span> <span class="m">175</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/**********工具栏********/</span>
+<span class="nt">QToolBar</span> <span class="p">{</span>
+         <span class="py">spacing</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QToolBar</span><span class="nd">::separator</span>
+<span class="p">{</span>
+         <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">);</span>
+         <span class="nl">width</span><span class="p">:</span> <span class="m">2px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QToolButton</span><span class="o">[</span><span class="nt">popupMode</span><span class="o">=</span><span class="s1">"1"</span><span class="o">]</span> <span class="p">{</span>
+    <span class="nl">padding-right</span><span class="p">:</span> <span class="m">2px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/**********表格**********/</span>
+<span class="nt">QTableWidget</span> <span class="p">{</span>
+        <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">45</span><span class="p">);</span>
+        <span class="nl">background</span><span class="p">:</span> <span class="nb">rgb</span><span class="p">(</span><span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">,</span> <span class="m">245</span><span class="p">);</span>
+        <span class="py">alternate-background-color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></table></code></div></div></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="iconfont icon-FolderOpen-1"></i> <a href='/categories/%E6%9D%82%E8%AE%B0/'>杂记</a>, <a href='/categories/qt/'>Qt</a></div><div class="post-tags"> <i class="iconfont icon-tag"></i> <a href="/tags/%E8%AE%B0%E5%BD%95/" class="post-tag no-text-decoration" >记录</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> 本文由作者按照 <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> 进行授权</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">分享</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi&url=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="iconfont icon-twitter"></i> </a> <a href="https://lineit.line.me/share/ui?url=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F&text=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi" data-toggle="tooltip" data-placement="top" title="Line" target="_blank" rel="noopener" aria-label="Line"> <i class="iconfont icon-13"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi&u=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="iconfont icon-facebook"></i> </a> <a href="https://t.me/share/url?url=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F&text=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="iconfont icon-telegram"></i> </a> <a href="http://connect.qq.com/widget/shareqq/index.html?url=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F&title=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi" data-toggle="tooltip" data-placement="top" title="QQ" target="_blank" rel="noopener" aria-label="QQ"> <i class="iconfont icon-QQ"></i> </a> <a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F&title=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi" data-toggle="tooltip" data-placement="top" title="QQ 空间" target="_blank" rel="noopener" aria-label="QQ 空间"> <i class="iconfont icon-qzone"></i> </a> <a href="http://service.weibo.com/share/share.php?title=Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%88%AC%E7%9A%84%E5%9D%91%EF%BC%88%E5%8F%82%E8%80%83%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%89+-+Olimi&url=https%3A%2F%2Folimiya.github.io%2Fposts%2FQt-%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%2588%25AC%25E7%259A%2584%25E5%259D%2591-%25E5%258F%2582%25E8%2580%2583%25E7%25BB%259F%25E4%25B8%2580%25E6%25A0%25B7%25E5%25BC%258F%25E7%259A%2584%25E6%2580%259D%25E8%25B7%25AF%2F" data-toggle="tooltip" data-placement="top" title="微博" target="_blank" rel="noopener" aria-label="微博"> <i class="iconfont icon-weibo"></i> </a> <i id="copy-link" class="iconfont icon-link small" data-toggle="tooltip" data-placement="top" title="分享链接" data-title-succeed="链接已复制！"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">最近更新</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%80%BB%E7%BB%93-Windows%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8/">命令行总结-Windows包管理器</a><li><a href="/posts/GithubPage/">GithubPage</a><li><a href="/posts/Windows-Terminal-+-WSL-+-Ubuntu-+-%E5%9B%BE%E5%BD%A2%E5%8C%96-%E7%BB%88%E7%AB%AF%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/">Windows Terminal + WSL + Ubuntu + 图形化 总结</a><li><a href="/posts/%E4%B8%AA%E4%BA%BA%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8C%87%E5%8D%97/">个人云服务器指南</a><li><a href="/posts/%E6%97%A7%E9%85%8D%E7%BD%AE%E7%AC%94%E8%AE%B0%E6%9C%AC%E6%9B%B4%E6%96%B0Windows11-CPU%E4%B8%8D%E5%85%BC%E5%AE%B9/">旧配置笔记本更新windows11 Cpu不兼容</a></ul></div><div id="access-links"><div class="panel-heading">外部链接</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="https://996.icu" target="_blank"> <img src="https://img.shields.io/badge/link-996.icu-red.svg" alt="996.icu" /> </a><li><a href="https://github.com/Olimiya/olimiya.github.io" target="_blank"> <i class="iconfont icon-github"></i> &nbsp;此博客的 Github 仓库 </a></ul></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">文章内容</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>相关文章</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F-%E7%BB%93%E5%90%88%E8%89%AF%E5%A5%BD%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/"><div class="card-body"> <em class="timeago small" data-ts="1581327960" > 2020-02-10 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Qt 统一样式-结合良好设计原则</h3><div class="text-muted small"><p> 写在前面 结合上一篇提到的界面风格统一的问题，ui界面美观是产品一个至关重要的优势，而界面美观最基础的一点就是风格统一。但在团队中界面设计往往由许多人共同完成，如果统一大家的样式就成了一个问题。 下文方法是项目过程自己摸索的方法，不知道成熟团队或者公司内部有没有更好的准则，仅供参考。 解决思路 以QDialog一个常用的组件为例。 首先，我们建立一个模板控件： 并搭建需要的框...</p></div></div></a></div><div class="card"> <a href="/posts/Qt%E6%9F%A5%E7%9C%8B%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93%E5%B8%96/"><div class="card-body"> <em class="timeago small" data-ts="1582880100" > 2020-02-28 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Qt查看源码总结帖</h3><div class="text-muted small"><p> 前言 在学习osg的时候养成一个习惯，就是一边学习一边打开自制的帮助文档，看着源码，一边去编码。然后结合很久之前就想学习Qt源码，拿到一份Qt类图之类的，对Qt学习实践进行一些总结。所以趁此机会，鼓捣了一下Qt中如何使用源码的做法。 此处实名感谢Qt开源社区群的の大佬，尽心尽力地给出许多有用的建议，一步一步进行指导。 实践 做法一 基于从osg处学来的操作，我先是利用doxygen扫...</p></div></div></a></div><div class="card"> <a href="/posts/Qt%E6%A0%B7%E5%BC%8F%E6%8E%A7%E5%88%B6-%E4%B8%BB%E9%A2%98%E5%88%87%E6%8D%A2%E4%BB%A5%E5%8F%8AQIcon%E7%9A%84%E6%BA%90%E7%A0%81%E6%8E%A2%E6%9E%90/"><div class="card-body"> <em class="timeago small" data-ts="1598340540" > 2020-08-25 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Qt样式控制：主题切换以及QIcon的源码探析</h3><div class="text-muted small"><p> 需求 需求是：类似于Qt Creator或者VS Code一样，提供单机软件的主题切换功能。 Simple Thing 其中颜色等配置切换可采取Qt Creator的Settings文档格式或者VS Code的json格式定义。 如果仅提供最基本的内嵌主题，则直接更换QSS设计即可（设置于顶层界面，需确保所有子界面均为顶层界面的孩子/孩子的孩子）。 问题 QSS样式中存在一个难题，...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/SVN-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6-%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E5%85%A5%E9%97%A8SVN%E4%BD%BF%E7%94%A8/" class="btn btn-outline-primary" prompt="上一篇"><p>SVN-版本控制：深入浅出入门SVN使用</p></a> <a href="/posts/Qt-%E7%BB%9F%E4%B8%80%E6%A0%B7%E5%BC%8F-%E7%BB%93%E5%90%88%E8%89%AF%E5%A5%BD%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/" class="btn btn-outline-primary" prompt="下一篇"><p>Qt 统一样式-结合良好设计原则</p></a></div><div id="waline"></div><script> function loadWaline() { var s = document.createElement('script'); s.setAttribute('src', '//cdn.jsdelivr.net/npm/@waline/client'); s.async = false; document.body.appendChild(s); s.onload = () => { var valine = Waline({ el: '#waline', serverURL: 'https://waline.olimi.icu/', emoji: [ 'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/qq', 'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba', 'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tw-emoji', 'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/bilibili', ], dark: 'html[data-mode=dark]', avatar: 'mp', placeholder: '说点什么吧！', }); }; }; setTimeout(function () { if ("IntersectionObserver" in window) { var io = new IntersectionObserver(function (entries) { if (entries[0].isIntersecting) { loadWaline(); io.disconnect(); } }); io.observe(document.getElementById('waline')); } else { loadWaline(); } }, 1); </script></div></div></div><footer class="d-flex w-100 justify-content-center"> <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"> </script><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2022 <a href="https://olimiya.github.io/">Olimi</a>. <span data-toggle="tooltip" data-placement="top" title="除非另有说明，本网站上的博客文章均由作者按照知识共享署名 4.0 国际 (CC BY 4.0) 许可协议进行授权。">保留部分权利。</span> <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人。</span></p></div><div class="footer-middle"><p class="mb-0"> <a href="http://beian.miit.gov.cn/" target="_blank">粤ICP备号</a></p></div><div class="footer-right"><p class="mb-0"> 本站由 <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> 生成，采用 <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> 主题。</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/%E8%AE%B0%E5%BD%95/">记录</a> <a class="post-tag" href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/">游戏引擎</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/linux%E7%BC%96%E7%A8%8B/">Linux编程</a> <a class="post-tag" href="/tags/%E6%BC%AB%E8%B0%88/">漫谈</a> <a class="post-tag" href="/tags/%E7%BD%91%E7%AB%99/">网站</a> <a class="post-tag" href="/tags/c/">C++</a> <a class="post-tag" href="/tags/git/">Git</a> <a class="post-tag" href="/tags/markdown/">Markdown</a> <a class="post-tag" href="/tags/shell/">shell</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="iconfont icon-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">搜索结果为空</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="iconfont icon-folder"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="iconfont icon-tag"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/zh.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-NKV7205XPP"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-NKV7205XPP'); }); </script>
