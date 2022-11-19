@@ -50,4 +50,4 @@ jobs:
           region: ${{ secrets.Region }}
         run: coscmd config -a $secret_id -s $secret_key -b $bucket -r $region
       - name: Upload to Tencent COS
-        run: coscmd upload -rs --delete ./_site/ /
+        run: coscmd upload -rs --delete ./ /
