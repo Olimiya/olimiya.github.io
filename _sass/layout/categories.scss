@@ -27,8 +27,7 @@
       border-top-right-radius: 0;
     }
   }
-
-} // .categories
+} /* .categories */
 
 .category-trigger {
   width: 1.7rem;
@@ -37,6 +36,15 @@
   text-align: center;
   color: #6c757d !important;
   display: inline-flex;
+
+  i {
+    position: relative;
+    height: 0.7rem;
+    width: 1rem;
+    transition: -webkit-transform 300ms ease;
+    transition: transform 300ms ease;
+    transition: transform 300ms ease, -webkit-transform 300ms ease;
+  }
 
   &:hover {
     i {
@@ -61,7 +69,5 @@
 
 .rotate {
   display: inline-block;
-  -ms-transform: rotate(-90deg); /* IE 9 */
-  -webkit-transform: rotate(-90deg); /* Safari 3-8 */
-  transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
 }

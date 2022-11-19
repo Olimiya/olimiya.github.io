@@ -3,6 +3,42 @@
  */
 
 $(function () {
+    let highlightLines = function (codeBlock, highlight_lines) {
+        let current_line = null;
+        let current_lineno = 1;
+        for (let cur = codeBlock.firstChild; cur != null; cur = cur.nextSibling) {
+            if (current_line == null)
+                current_line = cur;
+            let contents = cur.textContent.split(/\n/g);
+            if ((contents || []).length > 1) {
+                let newline_count = contents.length - 1;
+                let subNodes = [];
+                for (let i = 0; i < newline_count + 1; i++) {
+                    let subNode = cur.cloneNode(false);
+                    subNode.textContent = contents[i];
+                    if (i != newline_count)
+                        subNode.textContent += '\n';
+                    codeBlock.insertBefore(subNode, cur);
+                    subNodes.push(subNode);
+                }
+                codeBlock.removeChild(cur);
+                cur = subNodes[newline_count];
+                for (let i = 0; i < newline_count; i++) {
+                    if (highlight_lines.includes(current_lineno)) {
+                        let hll_node = document.createElement("span");
+                        hll_node.setAttribute("class", "hll");
+                        codeBlock.insertBefore(hll_node, current_line);
+                        for (let next = hll_node.nextSibling; next != subNodes[i]; next = hll_node.nextSibling)
+                            hll_node.appendChild(next);
+                        hll_node.appendChild(subNodes[i]);
+                    }
+                    current_line = subNodes[i + 1];
+                    current_lineno++;
+                }
+            }
+        }
+    };
+
     $(".highlighter-rouge").each(function () {
         const attr_highlight_lines = $(this).attr("highlight-lines");
         if (attr_highlight_lines && attr_highlight_lines.length > 0) {
@@ -24,33 +60,7 @@ $(function () {
             })
             let pre = $("pre", $(this));
             pre = pre[pre.length - 1];
-            let current_line = 1;
-            let in_hll = false;
-            let hll_node = null;
-            for (let cur = pre.firstChild; cur != null; cur = cur.nextSibling) {
-                if (cur.nodeType == Node.TEXT_NODE) {
-                    let count = (cur.nodeValue.match(/\n/g) || []).length;
-                    if (count > 0) {
-                        in_hll = false;
-                        current_line += count;
-                    } else if (count == 0 && in_hll) {
-                        hll_node.appendChild(cur);
-                        cur = hll_node;
-                    }
-                } else if (lines.includes(current_line)) {
-                    if (!in_hll) {
-                        hll_node = document.createElement("span");
-                        hll_node.setAttribute("class", "hll");
-                        pre.insertBefore(hll_node, cur);
-                        in_hll = true;
-                        if (hll_node.previousSibling.nodeType == Node.TEXT_NODE) {
-                            hll_node.appendChild(hll_node.previousSibling);
-                        }
-                    }
-                    hll_node.appendChild(cur);
-                    cur = hll_node;
-                }
-            }
+            highlightLines(pre, lines);
         }
     })
-});
+})
