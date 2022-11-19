@@ -10,24 +10,36 @@ order: 5
 
 主要使用 C/C++ 开发，最喜欢的语言是 Rust。
 
-## 常用 ID
+请注意，无论是 `Nihil` 还是 `Nichts Hsu` 都属于网络署名，与现实无关，非本人英文名。本人自信于中文及中华文化，需要用到英文名的场合，会选择使用拼音。
 
-* Nihil
-* Nichts Hsu
-* NichtsVonChaos（早期 ID，多用于早期注册的账号，如 gmail）
+## 许可说明
 
-## 已弃用 ID
+1. 所有原创文章均以 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 许可证授权，您可以：
 
-* towanoICIT（略称 icit，仅在与 I Wanna 圈有关联时使用）
+    * 以任何媒介与形式复制、重新分发文章
+    * 出于任何目的（甚至是商业目的）地重新混合、转换文章内容
 
-## 个人账号
+    只要您遵守以下条款：
 
-* QQ：非公开
-* Twitter：[@NichtsHsu](https://twitter.com/NichtsHsu){:target="_blank"}
-* Gmail：<mailto:NichtsVonChaos@gmail.com>
-* Github：[NichtsHsu](https://github.com/NichtsHsu){:target="_blank"}
-* Discord：Nihil#4200
-* Bilibili：[-NIHIL-](https://space.bilibili.com/6631803){:target="_blank"}
-* Steam：[Nihil](https://steamcommunity.com/id/NichtsHsu/){:target="_blank"}
+    * 必须提供创作者的署名，版权和许可声明，免责声明以及文章链接
+    * 必须说明是否对原文进行修改，并指示出该修改
+    * 不得以任何形式暗示创作者认可您或您的使用
+    * 不得以法律条款或技术手段来限制他人做出本许可证所允许的行为
 
-大部分账号都是隔三差五看一次，很久才回复是很正常的。
+2. 所有翻译类文章均不享受任何著作权利，不用于任何商业目的，不以任何许可证进行授权，不对任何转载行为尤其是商业转载行为负责，一切权利由原创作者保有。
+3. 文章中贴出的代码片段，如果是从 Github 或其他来源复制而来，则应当遵守代码原始出处的许可证。否则，一律采用 [WTFPL 许可证](https://zh.m.wikipedia.org/zh-hans/WTFPL)，许可证内容如下：
+
+    ```text
+            你他妈的想干嘛就干嘛公共许可证
+                第二版，2004年12月
+
+        版权所有(C) 2021~2022 Nichts Hsu<NichtsVonChaos@gmail.com>
+
+        任何人都有复制与发布本协议的原始或修改过的版本的权利。
+        若本协议被修改，须修改协议名称。
+
+                你他妈的想干嘛就干嘛公共许可证
+                    复制、发布和修改条款
+
+        0. 你只要他妈的想干嘛就干嘛。
+    ```

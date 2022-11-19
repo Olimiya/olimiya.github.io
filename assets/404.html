@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "{{ site.data.locales[lang].not_found.title }}"
+title: "{{ site.data.locales[site.lang].not_found.title }}"
 permalink: /404.html
 
 redirect_from:
@@ -10,8 +10,6 @@ redirect_from:
 
 no_title: true
 ---
-
-{% include lang.html %}
 
 <head>
   <meta charset="UTF-8">
@@ -255,15 +253,15 @@ no_title: true
     <div class="ErrorPage-container">
       <div class="ErrorPage-text">
         <h1 class="ErrorPage-title">404</h1>
-        <p class="ErrorPage-subtitle">{{ site.data.locales[lang].not_found.statment }}</p>
+        <p class="ErrorPage-subtitle">{{ site.data.locales[site.lang].not_found.statment }}</p>
         <a class="Button Button--primary Button--blue ErrorPage-primaryButton" href="{{ site.baseurl }}/">
-          {{ site.data.locales[lang].not_found.head_back }}
+          {{ site.data.locales[site.lang].not_found.head_back }}
         </a>
         <div class="ErrorPage-otherButtonContainer">
-          {{ site.data.locales[lang].not_found.or }}
+          {{ site.data.locales[site.lang].not_found.or }}
           <button class="Button Button--plain Button--blue ErrorPage-otherButton ErrorPage-goBackButton"
             onclick="Goback()">
-            {{ site.data.locales[lang].not_found.previous_page }}
+            {{ site.data.locales[site.lang].not_found.previous_page }}
             <svg class="Zi Zi--ArrowRight" fill="currentColor" viewBox="0 0 24 24" width="24px" height="24px">
               <path
                 d="M9.218 16.78a.737.737 0 0 0 1.052 0l4.512-4.249a.758.758 0 0 0 0-1.063L10.27 7.22a.737.737 0 0 0-1.052 0 .759.759 0 0 0-.001 1.063L13 12l-3.782 3.716a.758.758 0 0 0 0 1.063z"

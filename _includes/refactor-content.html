@@ -31,11 +31,15 @@
   %}
 {% endif %}
 
-<!-- Add attribute 'hide-bullet' to the checkbox list -->
-
-{% if _content contains '<li class="task-list-item"><' %}
+<!-- Change the icon of checkbox -->
+{% if _content contains '<input type="checkbox"' %}
   {% assign _content = _content
-    | replace: '"task-list-item"><', '"task-list-item" hide-bullet><'
+    | replace:
+        '<input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />',
+        '<i class="iconfont icon-iccheckcircle checked"></i>'
+    | replace:
+        '<input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />',
+        '<i class="iconfont icon-yuan_fuzhi"></i>'
   %}
 {% endif %}
 
@@ -177,9 +181,9 @@
         {% assign _code = _left | split: 'run="' | last | split: '"' | first %}
         {% capture _play_button %}
           <button class="button-run-code button-run-{{ _code }}" aria-label="run" 
-                  output-title="{{ site.data.locales[lang].post.button.run.output }}"
-                  wait-message="{{ site.data.locales[lang].post.button.run.wait }}"
-                  error-prompt="{{ site.data.locales[lang].post.button.run.error_prompt }}">
+                  output-title="{{ site.data.locales[site.lang].post.button.run.output }}"
+                  wait-message="{{ site.data.locales[site.lang].post.button.run.wait }}"
+                  error-prompt="{{ site.data.locales[site.lang].post.button.run.error_prompt }}">
             <i class="iconfont icon-playfill"></i>
           </button>
         {% endcapture %}
@@ -190,11 +194,10 @@
       {% assign _new_content = _new_content | append: _snippet
           | append: '<div class="code-header">'
           | append: _label
-          | append: '<span class="code-header-right">'
           | append: _play_button
-          | append: '<button class="button-copy" aria-label="copy" title-succeed="'
-          | append: site.data.locales[lang].post.button.copy_code.succeed
-          | append: '"><i class="iconfont icon-copy"></i></button></span></div>'
+          | append: '<button class="button-copy" aria-label="copy" data-title-succeed="'
+          | append: site.data.locales[site.lang].post.button.copy_code.succeed
+          | append: '"><i class="iconfont icon-copy"></i></button></div>'
           | append: '<div class="highlight"><code>'
       %}
 
@@ -230,7 +233,7 @@
 
       {% assign left = snippet | split: mark_end | first %}
       {% assign right = snippet | slice: left.size, snippet.size %}
-      {% assign left = left | replace: '">', '"><span class="mr-2">' | append: '</span>' %}
+      {% assign left = left | replace_first: '">', '"><span class="mr-2">' | append: '</span>' %}
 
       {% assign _new_content = _new_content | append: mark_start
           | append: left | append: anchor | append: right

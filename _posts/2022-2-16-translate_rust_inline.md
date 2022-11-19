@@ -1,13 +1,14 @@
 ---
 title: "[译] Rust 中的内联"
 date: 2022-2-16 9:58:35 +0800
-categories: [翻译, Rust]
+categories: [翻译, "[译]Rust"]
 tags: [rust, 翻译]     # TAG names should always be lowercase
+license: false
 ---
 
 ## 免责声明
 
-本文是对原博文《[Inline In Rust](https://matklad.github.io/2021/07/09/inline-in-rust.html){: target="_blank" }》的无授权翻译转载，不享受任何著作权利，不用于任何商业目的，也不得用于商业目的二次转载，一切权利均由原作者 [Aleksey Kladov](https://github.com/matklad) 保有。
+本文是对原博文《[Inline In Rust](https://matklad.github.io/2021/07/09/inline-in-rust.html){: target="_blank" }》的无授权翻译转载，不享受任何著作权利，不用于任何商业目的，不以任何许可证进行授权，不对任何转载行为尤其是商业转载行为负责。一切权利均由原作者 [Aleksey Kladov](https://github.com/matklad) 保有。
 
 本文中出现的所有第一人称均指代 Aleksey Kladov 而非译者本人。本文中对一些术语会额外附加英文原文注释，以帮助读者搜索相关概念。
 

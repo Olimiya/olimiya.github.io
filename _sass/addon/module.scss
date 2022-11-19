@@ -7,7 +7,7 @@
 %heading {
   color: var(--heading-color);
   font-weight: 600;
-  font-family: 'Lato', 'Microsoft Yahei', sans-serif;
+  font-family: Lato, "Microsoft Yahei", sans-serif;
 }
 
 %section {
@@ -73,6 +73,8 @@
 }
 
 %no-cursor {
+  -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -101,6 +103,8 @@
 
 %sidebar-links {
   color: rgba(117, 117, 117, 0.9);
+  -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -134,11 +138,10 @@
   position: relative;
   left: 50%;
   -webkit-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
-@mixin prompt($type, $fw-icon, $icon-weight: 900) {
+@mixin prompt($type, $fw-icon, $icon-weight: 400) {
   &.prompt-#{$type} {
     background-color: var(--prompt-#{$type}-bg);
 

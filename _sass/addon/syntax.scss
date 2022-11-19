@@ -9,22 +9,22 @@
 html {
   @media (prefers-color-scheme: light) {
     &:not([data-mode]),
-    [data-mode=light] {
+    &[data-mode="light"] {
       @include light-syntax;
     }
 
-    &[data-mode=dark] {
+    &[data-mode="dark"] {
       @include dark-syntax;
     }
   }
 
   @media (prefers-color-scheme: dark) {
     &:not([data-mode]),
-    &[data-mode=dark] {
+    &[data-mode="dark"] {
       @include dark-syntax;
     }
 
-    &[data-mode=light] {
+    &[data-mode="light"] {
       @include light-syntax;
     }
   }
@@ -99,24 +99,21 @@ $code-radius: 6px;
     text-align: right;
     color: var(--highlight-lineno-color);
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
-    -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
   }
 
   /* set the dollar sign to non-selectable */
   .gp {
+    -webkit-user-select: none;
+    -moz-user-select: none;
     user-select: none;
   }
-
 } /* .highlight */
 
 code {
   -webkit-hyphens: none;
-  -ms-hyphens: none;
-  -moz-hyphens: none;
   hyphens: none;
   font-family: "Fira Code", "Microsoft Yahei", monospace;
   font-variant-ligatures: none;
@@ -124,6 +121,7 @@ code {
   &.highlighter-rouge {
     // font-size: $code-font-size;
     padding: 3px 5px;
+    word-break: break-word;
     border-radius: 4px;
     background-color: var(--inline-code-bg);
   }
@@ -170,10 +168,10 @@ td.rouge-code {
 /* Hide line numbers for default, console, and terminal code snippets */
 div {
   &[class^="highlighter-rouge"],
+  &.nolineno,
   &.language-plaintext.highlighter-rouge,
   &.language-console.highlighter-rouge,
-  &.language-terminal.highlighter-rouge,
-  &.nolineno {
+  &.language-terminal.highlighter-rouge {
     pre.lineno {
       display: none;
     }
@@ -263,6 +261,10 @@ div {
       i {
         color: var(--clipboard-checked-color);
       }
+    }
+
+    &:focus {
+      outline: none;
     }
 
     &:not([timeout]):hover {

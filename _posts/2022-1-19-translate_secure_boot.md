@@ -1,13 +1,14 @@
 ---
 title: "[译] 安全引导与镜像验证技术概览"
 date: 2022-1-19 17:21:27 +0800
-categories: [翻译, Android]
+categories: [翻译, "[译]Android"]
 tags: [android, 翻译, 高通]     # TAG names should always be lowercase
+license: false
 ---
 
 ## 免责声明
 
-本文是对原文档《[Secure Boot and Image Authentication Technical Overview](https://www.qualcomm.com/media/documents/files/secure-boot-and-image-authentication-technical-overview-v2-0.pdf){: target="_blank" }》的无授权翻译，不享受任何著作权利，不用于任何商业目的，也不得用于商业目的二次转载，一切权利均由原著作权所有者高通公司（QTI，Qualcomm Technologies, Inc.）保有。
+本文是对原文档《[Secure Boot and Image Authentication Technical Overview](https://www.qualcomm.com/media/documents/files/secure-boot-and-image-authentication-technical-overview-v2-0.pdf){: target="_blank" }》的无授权翻译，不享受任何著作权利，不用于任何商业目的，不以任何许可证进行授权，不对任何转载行为尤其是商业转载行为负责。一切权利均由原著作权所有者高通公司（QTI，Qualcomm Technologies, Inc.）保有。
 
 本文中出现的所有第一人称均指代高通公司。本文中对一些术语会额外附加英文原文注释，以帮助读者搜索相关概念。
 

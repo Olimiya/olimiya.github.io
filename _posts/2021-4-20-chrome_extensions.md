@@ -47,9 +47,10 @@ Chrome 的下载管理器，取代原本的 Chrome 下载界面：
 
 由 [SteamDB](https://steamdb.info/){:target="_blank"} 提供的插件，可以在网页版 Steam 商店游戏界面插入许多有用的信息，比如 Sub ID，史低价格，游戏人数等，同时提供跳过年龄询问，跳过市场出售物品时勾选同意协议等等实用的功能。
 
-## [SuperCopy](https://chrome.google.com/webstore/detail/supercopy-enable-copy/onepmapfbjohnegdmfhndpefjkppbjkm){:target="_blank"}
+## ~~SuperCopy~~
 
-解除网站复制限制，比如：百度文库。注意，该插件不是默认生效的，需要在页面点击插件，选择“破解禁止复制”之后才会生效，并且将会永久记住该网站，下次打开自动破解。
+> 此插件涉及弹出天猫商城窗口，故不再推荐
+{: .prompt-info }
 
 ## [Tampermonkey](chrome://extensions/?id=dhdgffkkebhmkfjojejmpbldmpobfkfo){:target="_blank"}
 

@@ -21,7 +21,7 @@ tabs:
 search:
   hint: search
   cancel: Cancel
-  no_results: Oops! No result founds.
+  no_results: Oops! No results found.
 
 panel:
   lastmod: Recently Updated
@@ -51,6 +51,10 @@ not_found:
   or: or
   previous_page: previous page
 
+notification:
+  update_found: A new version of content is available.
+  update: Update
+
 # ----- Posts related labels -----
 
 post:
@@ -79,7 +83,21 @@ post:
   # pinned prompt of posts list on homepage
   pin_prompt: Pinned
 
+# Date time format.
+# See: <http://strftime.net/>, <https://day.js.org/docs/en/display/format>
+df:
+  post:
+    strftime: '%b %e, %Y'
+    dayjs: 'll'
+  archives:
+    strftime: '%b'
+    dayjs: 'MMM'
+
 # categories page
 categories:
-  category_measure: categories
-  post_measure: posts
+  category_measure:
+    singular: category
+    plural: categories
+  post_measure:
+    singular: post
+    plural: posts
