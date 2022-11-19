@@ -1,4 +1,4 @@
-name: 'Automatic build'
+name: "Automatic build"
 on:
   push:
     branches:
@@ -10,14 +10,13 @@ on:
 
 jobs:
   continuous-delivery:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # for posts's lastmod
+          fetch-depth: 0 # for posts's lastmod
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -27,3 +26,28 @@ jobs:
 
       - name: Deploy
         run: bash tools/deploy.sh
+
+  deploy-to-cos:
+    needs: continuous-delivery
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # for posts's lastmod
+          ref: gh-pages
+
+      - name: Install coscmd
+        run: sudo pip install coscmd
+
+      - name: Configure coscmd
+        env:
+          secret_id: ${{ secrets.SecretId }}
+          secret_key: ${{ secrets.SecretKey }}
+          bucket: ${{ secrets.BUCKET }}
+          region: ${{ secrets.Region }}
+        run: coscmd config -a $secret_id -s $secret_key -b $bucket -r $region
+      - name: Upload to Tencent COS
+        run: coscmd upload -rs --delete ./_site/ /
