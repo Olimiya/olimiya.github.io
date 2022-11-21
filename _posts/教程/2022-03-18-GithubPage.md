@@ -34,17 +34,23 @@ description: .
 
    ```bash
    # 自行安装MYSY2，这提供jekyll原生扩展所需的额外工具
-   choco install msys2  # 根据提示选择默认的[1,3]
+   choco install msys2  
    # 这里安装msys2时可能会卡在updating trust database，Ctrl+C取消然后重新运行一次即可 --force重新安装
    
    # 然后运行ridk，包括更多用于本机扩展的工具
-   ridk install
+   ridk install# 根据提示选择默认的[1,3]
    ```
 
 4. 安装Bundler
 
    ```bash
    gem install bundler
+   # rubygems.org连不上的话
+   gem sources --add https://mirrors.ustc.edu.cn/rubygems/ --remove https://rubygems.org/
+   # 列出已有源
+   gem sources -l
+   # 应该只有 一个
+    bundle config mirror.https://rubygems.org https://mirrors.ustc.edu.cn/rubygems/
    ```
 
 5. 安装jeykyll
@@ -96,9 +102,14 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
   bundle exec jekyll serve
   ```
 
-### TODO
+### 腾讯云COS托管+图床
 
 1. 迁移或同时备份至腾讯云COS，添加自动CI处理
+
+   已添加至COS.  方案：
+
+   1. 开通腾讯云COS
+
 2. 替换图床，考虑也使用COS
 
 ### 注意
