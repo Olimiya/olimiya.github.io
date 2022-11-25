@@ -56,7 +56,6 @@ jobs:
       - name: Upload page artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          name: 'gh-artifact'
           path: "_site${{ steps.pages.outputs.base_path }}"
           
       - name: Upload site artifact
@@ -90,13 +89,8 @@ jobs:
         with:
           name: 'gh-artifact'
           path: "_site"
-
-      - name: 'Echo download path'
-        run: echo ${{steps.download.outputs.download-path}}
-        
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: ${{steps.download.outputs.download-path}}
+      
+      - run: pwd
         
       - name: Install coscmd
         run: sudo pip install coscmd
@@ -109,4 +103,4 @@ jobs:
           region: ${{ secrets.Region }}
         run: coscmd config -a $secret_id -s $secret_key -b $bucket -r $region
       - name: Upload to Tencent COS
-        run: coscmd upload -rs --delete --yes ./ /
+        run: coscmd upload -rs --delete --yes ./_site /
