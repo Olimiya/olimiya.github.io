@@ -110,14 +110,12 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
 
 3. **Google Analystic**：GA工具，查看网站的情况，比如用户数之类的。[[Analytics (google.com)](https://analytics.google.com/analytics/web/?authuser=0#/)](https://analytics.google.com/analytics/web/#/p311381697/reports/reportinghub?params=_u..nav%3Dmaui)在设置中添加媒体资源，根据流程设置数据流，填写网站url之类的。获得一个ID。将ID填入_config.yml中google_analytics下的id即可。
 
-   ![image-20221125183951452](../../../../../Data/AppData/Roaming/Typora/typora-user-images/image-20221125183951452.png)
+   ![image-20221125183951452](https://picbed-1307731756.cos.ap-hongkong.myqcloud.com/img/image-20221125184259830.png)
 
-   ![image-20221125184259830](../../../../../Data/AppData/Roaming/Typora/typora-user-images/image-20221125184259830.png)
+   ![image-20221125184259830](https://picbed-1307731756.cos.ap-hongkong.myqcloud.com/img/image-20221125183951452.png)
 
 4. **Bing收录**：[Bing Webmaster Tools - Bing Webmaster Tools](https://www.bing.com/webmasters/home)。这个可以直接从Google Search中导入进来。
-5. **百度收录**：这个就要求必须有备案的域名了。[站点管理_站长工具_百度搜索资源平台 (baidu.com)](https://ziyuan.baidu.com/site/index#/)。同样可以使用HTML标签验证，在_config.yml中添加`baidu_site_verification`.
-
-
+5. **百度收录**：这个就要求必须有备案的域名了。[站点管理_站长工具_百度搜索资源平台 (baidu.com)](https://ziyuan.baidu.com/site/index#/)。不过这个不能便捷地在_config.yml加标识，google那个是有jekyll-seo-tag插件自动完成的。老老实实添加到`_include\head.html`里面吧。
 
 ## 腾讯云COS托管+图床
 
