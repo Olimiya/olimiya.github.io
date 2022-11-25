@@ -53,14 +53,18 @@ jobs:
         run: |
           bundle exec htmlproofer _site --disable-external --check-html --allow_hash_href
 
-      - name: Upload site artifact
+      - name: Upload page artifact
         uses: actions/upload-pages-artifact@v1
         with:
           name: 'gh-artifact'
           path: "_site${{ steps.pages.outputs.base_path }}"
           
-      - run: echo _site${{ steps.pages.outputs.base_path }}
-
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'gh-artifact'
+          path: "_site" # or path/to/artifact
+    
   deploy:
     environment:
       name: gh-pages
@@ -71,9 +75,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-        
-      - run: echo ${{ steps.deployment.outputs.page_url }}
-
 
   deploy-to-cos:
     needs: [build,deploy]
@@ -88,7 +89,7 @@ jobs:
         id: download
         with:
           name: 'gh-artifact'
-          path: "_site${{ steps.pages.outputs.base_path }}"
+          path: "_site"
 
       - name: 'Echo download path'
         run: echo ${{steps.download.outputs.download-path}}
