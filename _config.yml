@@ -29,7 +29,7 @@ description: >-                        # 由 seo meta 和 atom feed 使用
   Olimi 的个人博客
 
 # 填入你的网站的协议和域名，例如，'https://username.github.io'
-url: 'https://olimiya.github.io'
+url: 'https://olimi.icu'
 
 author: Olimi    # 全名
 
@@ -44,7 +44,7 @@ social:
   email: olimi861921648@gmail.com             # 邮箱地址
   links:
     # 第一个链接将会作为版权所有者的链接
-    - https://olimiya.github.io/
+    - https://olimi.icu/
     - https://twitter.com/olimi861921648      # 推特主页
     - https://github.com/olimiya       # Github 主页
     # 取消注释以添加更多链接
@@ -52,7 +52,7 @@ social:
     # - https://www.linkedin.com/in/username
 
 google_site_verification: g9ctzJLPpJ3wh5a6Bk6kvp7UAB5N22zIe2V2PZE72TA      # 填入你的认证字符串
-baidu_site_verification: code-7ObQgd1eBy
+baidu_site_verification: code-sjyCCfnqWW
 
 # ↑ --------------------------
 # `jekyll-seo-tag` 设置结束
