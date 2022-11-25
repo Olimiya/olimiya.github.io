@@ -269,7 +269,7 @@ jobs:
 
 - COS：创建好桶就行。同时可以开启防盗链。个人配置是：白名单、空referer允许（可直接使用url访问资源）、Referer填写自己的域名。
 
-![image-20221125120020537](../../../../../Data/AppData/Roaming/Typora/typora-user-images/image-20221125120020537.png)
+![image-20221125120020537](https://picbed-1307731756.cos.ap-hongkong.myqcloud.com/img/image-20221125120020537.png)
 
 References:
 
