@@ -8,8 +8,6 @@ description: .
 
 ## Github Page + Jekyll + Chirpy
 
-**更新：**
-
 ### Jekyll安装
 
 官方指南参考：[Jekyll on Windows \|Jekyll • 简单、博客感知的静态站点 (jekyllrb.com)](https://jekyllrb.com/docs/installation/windows/)
@@ -102,19 +100,180 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
   bundle exec jekyll serve
   ```
 
-### 腾讯云COS托管+图床
-
-1. 迁移或同时备份至腾讯云COS，添加自动CI处理
-
-   已添加至COS.  方案：
-
-   1. 开通腾讯云COS
-
-2. 替换图床，考虑也使用COS
-
 ### 注意
 
 **开启HTTPS：**可以在github page的项目中：设置->Pages->Enforce HTTPS. 强制github page使用https.
+
+
+
+## 腾讯云COS托管+图床
+
+### 迁移至腾讯云COS
+
+1. 开通[腾讯云COS](https://console.cloud.tencent.com/cos)。**关于价格：**价格很便宜，有免费的50G空间用6个月，用完以后如果买资源包，一个一年10GB的空间也不到10块钱，如果按使用付费，价格可能更低。
+2. 创建桶：命名、地域、访问权限等。按需选择。
+   - 地域：哪个地方近选哪个，注意选国内的话后续挂域名需要有备案的域名，如果选国外或香港，则域名无需备案。建议选择香港。
+   - 访问权限必须选公有读私有写。
+3. 配置COS：管理桶，开启静态网站，按需添加强制HTTPS、索引页、重定向等，[阅读使用帮助](https://cloud.tencent.com/document/product/436/14984)；
+4. 上传文件、已生成的网页（Jekyll中_site文件夹），注意索引文档默认是在根目录中，如果不在，需要在静态网站管理中指定路径。上传文件有一个[COSBrowser](https://cloud.tencent.com/document/product/436/11366)工具，工具作用不是特别大，如果只是上传文件，在网页端上传即可。工具有一个同步文件夹功能，但好像只能同步一个文件夹，而且需要一直开着COSBrowser。
+5. 即可使用静态网站中的访问节点URL访问。
+6. 可选* 域名太过丑陋，可自定义域名，在“域名与传输管理”中，[查看帮助](https://cloud.tencent.com/document/product/436/36638)。省事的话建议直接自定义源站域名，省略CDN相关的处理（处理得不好可能比源站更慢）。HTTPS需要证书，没有的话参考《个人云服务器》一文。
+
+现在已经把当前状态迁移完成，但是每次更新后都需要手动同步，太麻烦了。
+
+关于自动化部署（静态网站）这个问题，随便搜有非常多Hexo迁移至COS的[博客](https://juejin.cn/post/6844903810091974670)，大概都是通过`hexo-deployer-cos-enhanced-dev`这样的插件。嗨，hexo的文章资源永远比jekyll多，hexo更加傻瓜式。
+
+Jekyll官方[推荐](https://jekyllrb.com/docs/deployment/automated/)有一些自动部署工具，核心主要是通过一些CI工具。比如[Travis CI使用](https://www.freecodecamp.org/chinese/news/continuous-deployment-with-travis-ci/)。而Jekyll+COS的大多都是通过[云开发Cloud Base](https://ke.qq.com/itdoc/cloudbasehosting-6ut238bq.html). 最后根据这个[博客](https://www.vnf.cc/2020/02/github-pages-sync-qcloud-cos/)确定思路：**之前一直有用Github Action自动构建并部署到gh-pages里，现在只需要把构建完成的网页文件自动推送到COS即可，而推送这个有COSCMD这个腾讯云提供的工具。**实现action的文件如下：
+
+```yaml
+name: "Build and Deploy"
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - .gitignore
+      - README.md
+      - LICENSE
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          # submodules: true
+          # If using the 'assets' git submodule from Chirpy Starter, uncomment above
+          # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v1
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3 # reads from a '.ruby-version' or '.tools-version' file if 'ruby-version' is omitted
+          bundler-cache: true
+
+      - name: Build site
+        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: "production"
+
+      - name: Test site
+        run: |
+          bundle exec htmlproofer _site --disable-external --check-html --allow_hash_href
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "_site${{ steps.pages.outputs.base_path }}"
+
+  deploy:
+    environment:
+      name: gh-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+  deploy-to-cos:
+    needs: [build,deploy]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # for posts's lastmod
+          ref: gh-pages
+
+      - name: Install coscmd
+        run: sudo pip install coscmd
+
+      - name: Configure coscmd
+        env:
+          secret_id: ${{ secrets.SecretId }}
+          secret_key: ${{ secrets.SecretKey }}
+          bucket: ${{ secrets.BUCKET }}
+          region: ${{ secrets.Region }}
+        run: coscmd config -a $secret_id -s $secret_key -b $bucket -r $region
+      - name: Upload to Tencent COS
+        run: coscmd upload -rs --delete --yes --ignore .git ./ /
+```
+
+将该文件夹存在`.github\workflow\xxx.yml`。上半部分来源Nihil的参考，最后推送至COS中的几个参数`SecretId`等，在仓库的Settings中配置好。
+
+**补充关于Git Action，可跳过：**
+
+1. 入门教程：[GitHub Actions 入门教程 - 阮一峰的网络日志 (ruanyifeng.com)](https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html)
+2. 官方文档：[GitHub Actions 的基本功能 - GitHub Docs](https://docs.github.com/cn/actions/learn-github-actions/essential-features-of-github-actions)
+3. 官方的市场：[GitHub Marketplace · Actions to improve your workflow](https://github.com/marketplace?type=actions)
+
+### 替换图床
+
+图床就更加简单了，个人使用的工具链是：Typora + Picgo-Core + COS。
+
+- Typora端：在偏好设置->图像->[说明](https://support.typora.io/Upload-Image/#picgo-core-command-line-opensource)。
+
+- Picgo-Core：[配置文件 \| PicGo-Core](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html)。配置Config.json.
+
+  ```json
+  {
+    "picBed": {
+      "current": "tcyun",
+      "tcyun": {
+        "secretId": "",
+        "secretKey": "",
+        "bucket": "",
+        "appId": "",
+        "area": "",
+        "path": "img/",
+        "customUrl": "",
+        "version": "v5"
+      },
+      "github": {
+        "repo": "",
+        "branch": "main",
+        "token": "",
+        "path": "",
+        "customUrl": ""
+      },
+      "uploader": "tcyun",
+      "transformer": "path"
+    },
+    "picgoPlugins": {}
+  }
+  ```
+
+- COS：创建好桶就行。同时可以开启防盗链。个人配置是：白名单、空referer允许（可直接使用url访问资源）、Referer填写自己的域名。
+
+![image-20221125120020537](../../../../../Data/AppData/Roaming/Typora/typora-user-images/image-20221125120020537.png)
+
+References:
+
+1. [HKL's Notes (vnf.cc)](https://www.vnf.cc/2020/02/github-pages-sync-qcloud-cos/)
 
 ## Github page + Hexo
 
