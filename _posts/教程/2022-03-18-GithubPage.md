@@ -125,7 +125,7 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
 
 关于自动化部署（静态网站）这个问题，随便搜有非常多Hexo迁移至COS的[博客](https://juejin.cn/post/6844903810091974670)，大概都是通过`hexo-deployer-cos-enhanced-dev`这样的插件。嗨，hexo的文章资源永远比jekyll多，hexo更加傻瓜式。
 
-Jekyll官方[推荐](https://jekyllrb.com/docs/deployment/automated/)有一些自动部署工具，核心主要是通过一些CI工具。比如[Travis CI使用](https://www.freecodecamp.org/chinese/news/continuous-deployment-with-travis-ci/)。而Jekyll+COS的大多都是通过[云开发Cloud Base](https://ke.qq.com/itdoc/cloudbasehosting-6ut238bq.html). 最后根据这个[博客](https://www.vnf.cc/2020/02/github-pages-sync-qcloud-cos/)确定思路：**之前一直有用Github Action自动构建并部署到gh-pages里，现在只需要把构建完成的网页文件自动推送到COS即可，而推送这个有COSCMD这个腾讯云提供的工具。**实现action的文件如下：
+Jekyll官方[推荐](https://jekyllrb.com/docs/deployment/automated/)有一些自动部署工具，核心主要是通过一些CI工具。比如[Travis CI使用](https://www.freecodecamp.org/chinese/news/continuous-deployment-with-travis-ci/)。而Jekyll+COS的大多都是通过[云开发Cloud Base](https://ke.qq.com/itdoc/cloudbasehosting-6ut238bq.html). 最后根据这个[博客](https://www.vnf.cc/2020/02/github-pages-sync-qcloud-cos/)确定思路：**之前一直有用Github Action自动构建并部署到gh-pages里，现在只需要把构建完成的网页文件自动推送到COS即可，而推送这个有COSCMD这个腾讯云提供的工具。**实现action的文件如下（可能有改动，参考仓库中.github\workflows下为准）：
 
 ```yaml
 name: "Build and Deploy"
@@ -183,11 +183,17 @@ jobs:
         run: |
           bundle exec htmlproofer _site --disable-external --check-html --allow_hash_href
 
-      - name: Upload site artifact
+      - name: Upload page artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: "_site${{ steps.pages.outputs.base_path }}"
 
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'gh-artifact'
+          path: "_site${{ steps.pages.outputs.base_path }}" # or path/to/artifact
+    
   deploy:
     environment:
       name: gh-pages
@@ -205,12 +211,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        id: download
         with:
-          fetch-depth: 0 # for posts's lastmod
-          ref: gh-pages
-
+          name: 'gh-artifact'
+        
       - name: Install coscmd
         run: sudo pip install coscmd
 
@@ -222,7 +227,7 @@ jobs:
           region: ${{ secrets.Region }}
         run: coscmd config -a $secret_id -s $secret_key -b $bucket -r $region
       - name: Upload to Tencent COS
-        run: coscmd upload -rs --delete --yes --ignore .git ./ /
+        run: coscmd upload -rs --delete --yes ./ /
 ```
 
 将该文件夹存在`.github\workflow\xxx.yml`。上半部分来源Nihil的参考，最后推送至COS中的几个参数`SecretId`等，在仓库的Settings中配置好。
