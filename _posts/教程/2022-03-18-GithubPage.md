@@ -1,7 +1,7 @@
 ---
 title: GithubPage
 date: 2022-03-18 01:48:54
-categories: 教程
+categories: [教程]
 tags: 网站 博客
 description: .
 ---

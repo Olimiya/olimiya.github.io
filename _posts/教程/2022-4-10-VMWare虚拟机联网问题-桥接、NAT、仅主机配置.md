@@ -2,7 +2,7 @@
 title: VMWare虚拟机网络探讨-桥接、NAT、仅主机配置
 date: 2022-4-10 15点37分
 categories: 教程
-tags: VMWare 虚拟化技术
+tags: VMWare 深入剖析
 ---
 
 
