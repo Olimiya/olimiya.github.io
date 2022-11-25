@@ -57,6 +57,8 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: "_site${{ steps.pages.outputs.base_path }}"
+          
+      - run: echo _site${{ steps.pages.outputs.base_path }}
 
   deploy:
     environment:
@@ -68,6 +70,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+        
+      - run: echo ${{ steps.deployment.outputs.page_url }}
+
 
   deploy-to-cos:
     needs: [build,deploy]
@@ -77,10 +82,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # for posts's lastmod
-          ref: gh-pages
 
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: 'my-artifact'
+          path: "_site${{ steps.pages.outputs.base_path }}"
+
+      - name: 'Echo download path'
+        run: echo ${{steps.download.outputs.download-path}}
+        
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: ${{steps.download.outputs.download-path}}
+        
       - name: Install coscmd
         run: sudo pip install coscmd
 
