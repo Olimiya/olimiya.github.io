@@ -115,7 +115,7 @@ Fork Nihil大佬的个人定制化版本。有轮子就不要造轮子了好吧�
    ![image-20221125184259830](../../../../../Data/AppData/Roaming/Typora/typora-user-images/image-20221125184259830.png)
 
 4. **Bing收录**：[Bing Webmaster Tools - Bing Webmaster Tools](https://www.bing.com/webmasters/home)。这个可以直接从Google Search中导入进来。
-5. **百度收录**：这个就要求必须有备案的域名了。[站点管理_站长工具_百度搜索资源平台 (baidu.com)](https://ziyuan.baidu.com/site/index#/)。同样可以使用HTML
+5. **百度收录**：这个就要求必须有备案的域名了。[站点管理_站长工具_百度搜索资源平台 (baidu.com)](https://ziyuan.baidu.com/site/index#/)。同样可以使用HTML标签验证，在_config.yml中添加`baidu_site_verification`.
 
 
 
