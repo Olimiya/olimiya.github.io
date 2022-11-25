@@ -85,9 +85,6 @@ jobs:
         id: download
         with:
           name: 'gh-artifact'
-          
-      - name: Display structure of downloaded files
-        run: ls -R
         
       - name: Install coscmd
         run: sudo pip install coscmd
