@@ -117,7 +117,7 @@ panel:
     toc: true
 
 comments:
-  active: ''  # 帖子评论区全局开关，例如，'disqus'。保持为空表示禁用
+  active:   # 帖子评论区全局开关，例如，'disqus'。保持为空表示禁用
   # active 选项可以是如下：
   # disqus 评论系统 > https://disqus.com/
   disqus:
