@@ -1,0 +1,62 @@
+## 先总结
+
+某些对象使用过程，在其生命周期中，意外调用了一些拷贝构造等，创建了一个新对象，一般情况这个对象的新建的隐式的，比如某些函数传递，使用了值传递，中间拷贝了一个对象进行传递，一般使用隐式的拷贝构造，意味着是浅拷贝。
+
+那这个拷贝对象析构时，调用析构函数，就可能释放掉原对象的一些资源，如清除了对象中的指针，导致野指针等情况。
+
+## 问题
+
+最近碰到了两次。
+
+### 一次
+
+```C++
+    QGFW_DS_Scheme()
+        : m_RootTask(new ST_Task(u8"任务列表"))
+    {
+    }
+    ~QGFW_DS_Scheme();
+
+QGFW_DS_Scheme::~QGFW_DS_Scheme()
+{
+    //指挥树
+
+    //任务树
+    clearTaskChildren();
+    delete m_RootTask;
+}
+```
+
+而代码中又使用了该数据结构一个对象的拷贝引用。类似于：
+
+```C++
+auto projScheme = GFw_GLOBALDATA_Controller::dataController()->scheme();
+```
+
+前面引用一个scheme对象 但是是使用值传递 没用引用。导致创建了一个新的scheme对象 用的是浅拷贝。然后这个对象析构的时候 把内部指针删除了。
+
+### 第二次
+
+```C++
+    auto mapObj = osgEarth::Registry::objectIndex()->get<MAP_CreatePrimitive>(id);
+    if (!mapObj.valid()) {
+        return;
+    }
+//析构
+MAP_CreatePrimitive::~MAP_CreatePrimitive()
+{
+    clear();
+    delete m_points;
+}
+
+```
+
+这里更加隐晦，代码看起来用的是智能指针，实际上还是隐含了拷贝构造。
+
+
+
+## 痛的领悟：
+
+对于对象中包含指针资源，而对象本身负责其生命周期管理，在析构中需删除其资源的：
+
+**要么重写拷贝构造，进行深拷贝；要么显式禁止掉拷贝构造函数！**
