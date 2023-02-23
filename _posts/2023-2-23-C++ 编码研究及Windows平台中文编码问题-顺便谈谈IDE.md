@@ -36,11 +36,11 @@ tags: C++ 编码
 
 - 如果统一使用UTF8编码，在我们项目内部完全没有问题（规范编码带来的好处）。问题是与其他项目对接、历史遗留部分存在问题。比如与LinkDDS库的对接。会定义UNICODE的宏，导致**字符串转换的错误（**主要是对宽字符的处理，它会直接将const char *转换为wstring，语法错误**）**。如下图1所示。**解决方案是可以在项目中手动去掉UNICODE宏**（意思是文件，特别是带中文字符的文件是unicode编码，但是告诉编译器说这不是unicode编码）。同时，也会导致在Qt Creator中索引LinkDDS这样用GB2312编码的项目时，**中文注释全部乱码**，如下图2所示。还有一些导入库编码跟当前项目编码不一致导致的小问题，会给出一些奇怪的报错提示，虽然还是可以运行（在Qt Creator中）。如下图3.
 
-  ![3f0765eb-2a57-49bc-b2cf-a8c102c03cee](https://picbed.olimi.icu//img/316c47be-63b2-42f3-8955-f98a9007d202.png)
+  ![316c47be-63b2-42f3-8955-f98a9007d202](https://picbed.olimi.icu//img/3f0765eb-2a57-49bc-b2cf-a8c102c03cee.png)
 
   ![a39f7c41-8172-4291-86a2-a1adecdb9ecb](https://picbed.olimi.icu//img/a39f7c41-8172-4291-86a2-a1adecdb9ecb.png)
 
-  ![316c47be-63b2-42f3-8955-f98a9007d202](https://picbed.olimi.icu//img/3f0765eb-2a57-49bc-b2cf-a8c102c03cee.png)
+  ![3f0765eb-2a57-49bc-b2cf-a8c102c03cee](https://picbed.olimi.icu//img/316c47be-63b2-42f3-8955-f98a9007d202.png)
 
 **总结：**
 
@@ -80,7 +80,7 @@ tags: C++ 编码
 
 **解决方案：**可以设置编译器选项，强制msvc用utf8编译。（注意这个选项并不是Qt Creator那个force utf-8 msvc output，那个只是把编译输出输出到65001代码页的终端）
 
-```Makefile
+```makefile
 msvc {
     QMAKE_CFLAGS += /utf-8
     QMAKE_CXXFLAGS += /utf-8
@@ -109,7 +109,5 @@ msvc {
   Build工具链：QMake+jom(基于nmake)
 
   Code Model：Clang
-
-  
 
 - Clion

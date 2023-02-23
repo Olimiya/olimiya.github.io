@@ -1,5 +1,5 @@
 ---
-title: Qt+VS项目迁移时配置问题
+title: 【工作记录】Qt+VS项目迁移时配置问题
 date: 2023-2-23 23:19:09
 categories: [工作记录]
 tags: 记录 Qt
