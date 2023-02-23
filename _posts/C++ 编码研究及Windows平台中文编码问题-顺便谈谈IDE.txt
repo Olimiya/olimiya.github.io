@@ -4,15 +4,87 @@
 
 
 
-## Windows平台的中文编码问题
-
-### Qt 项目+外部GBK编码项目：统一编码问题
-
-先说结论：Qt项目默认编码方式为UTF-8编码，对接查看外部项目时手动选择编码
+## Windows平台的中文编码总结
 
 
 
+## 项目经验
 
+### Qt 项目+外部GBK编码项目：统一编码
+
+先说结论：<u>**建议Qt项目默认编码方式为UTF-8编码**</u>，如果外部项目为其他编码方案可以手动选择编码.
+
+研究过程：**UTF8 Or GB2312**
+
+- 如果用GB2312，**Qt特有的一些文件，如.ui、.qrc等对非utf8的不能支持**（类似于.py），uic编译ui时，要求ui文件时utf8格式。如下图1。同时qrc也要求utf8。在qrc添加资源文件时，会保存为utf8格式。可以强行更改qrc文件编码，但会导致带中文的资源文件乱码，无法加载。如下图2。同时，在Qt Creator中，如果设置默认编码为GB2312，那新建文件时，**保存都会保存为GB2312编码（如果包含中文字符）**，包括UI文件。结合上面的问题，新建的qt文件（UI文件）就必须**手动设置为utf8**。同时，Qt中打开**UTF8编码的UI文件也会提示错误**。如下图3(仔细看UI文件头，已经写了`enconding=utf-8`，跟GB编码肯定是冲突的)。
+
+  ![output](https://picbed.olimi.icu//img/output.png)
+
+![c3e01ab1-b196-4681-baf0-1f4b953e4ca5](https://picbed.olimi.icu//img/c3e01ab1-b196-4681-baf0-1f4b953e4ca5.png)
+
+
+
+![87e526f2-0766-486e-87e1-a1b889c30951](https://picbed.olimi.icu//img/87e526f2-0766-486e-87e1-a1b889c30951.png)
+
+- 如果统一使用UTF8编码，在我们项目内部完全没有问题（规范编码带来的好处）。问题是与其他项目对接、历史遗留部分存在问题。比如与LinkDDS库的对接。会定义UNICODE的宏，导致**字符串转换的错误（**主要是对宽字符的处理，它会直接将const char *转换为wstring，语法错误**）**。如下图1所示。**解决方案是可以在项目中手动去掉UNICODE宏**（意思是文件，特别是带中文字符的文件是unicode编码，但是告诉编译器说这不是unicode编码）。同时，也会导致在Qt Creator中索引LinkDDS这样用GB2312编码的项目时，**中文注释全部乱码**，如下图2所示。还有一些导入库编码跟当前项目编码不一致导致的小问题，会给出一些奇怪的报错提示，虽然还是可以运行（在Qt Creator中）。如下图3.
+
+  ![3f0765eb-2a57-49bc-b2cf-a8c102c03cee](https://picbed.olimi.icu//img/316c47be-63b2-42f3-8955-f98a9007d202.png)
+
+  ![a39f7c41-8172-4291-86a2-a1adecdb9ecb](https://picbed.olimi.icu//img/a39f7c41-8172-4291-86a2-a1adecdb9ecb.png)
+
+  ![316c47be-63b2-42f3-8955-f98a9007d202](https://picbed.olimi.icu//img/3f0765eb-2a57-49bc-b2cf-a8c102c03cee.png)
+
+**总结：**
+
+- GB2312
+  - 对Qt的文件，如.ui、.qrc等，特指包含中文字符（**没有中文字符，GB和U8没有区别**）时，用GB2312编码储存不支持。
+  - 要手动将这些文件设置为utf8，但是设置以后在QtCreator中又不能直接打开。
+  - **解决：统一用GB2312，Qt相关的用UTF8。Qt相关的（UI）中尽量不包含中文。有中文可以用外部的Qt Designer打开。**
+- **UTF8（目前选择）**
+  - LinkDDS库的对接。会定义UNICODE的宏，导致**字符串转换的错误（**主要是对宽字符的处理**）。**
+  - 索引GB2312编码的项目时，**中文注释全部乱码。**
+  - **解决：在项目中手动去掉UNICODE宏。看GB2312项目时，手动选择编码方式。**
+- 部分问题本质原因是Qt Creator使用一种默认编码方案，对项目所有文件统一按照这个编码方式处理，打开、保存，而不是对每个文件内容进行推测编码，虽然也应该统一编码。（虽然几种C++ IDE，VS、Qt Creator、CLion都不能自动推测，只有VSCode可以）
+
+### UTF8标准统一下的问题
+
+先总结问题：下面两个问题都是因为系统默认编码方案GBK和我们统一的标准UTF8冲突导致。具体冲突原因一个是**文件编码UTF8和MSVC编译实际判断为ASCII编码冲突**；另一个是代码遗留问题，Qt中中文字符串使用**`fromLocal8Bit`**是依赖于系统本地编码的，和项目编码标准冲突。
+
+如果把开发环境的系统编码改为UTF8，也不会出现下面问题。**更改方式为：语言和区域设置中，勾选beta版utf8.**
+
+![4083e6e1-0d19-4787-96a3-1d9a2d3f7696](https://picbed.olimi.icu//img/4083e6e1-0d19-4787-96a3-1d9a2d3f7696.png)
+
+具体问题的研究和解法如下：
+
+- **error：常量中有换行符问题**
+
+这个问题跟C4819的warning一起出现，区别只是没有用中文字符串的时warning，用中文字符串就是error：
+
+> warning: C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失。
+
+**原因：**虽然warning提示我们使用unicode编码，但这里已经将所有文件统一为uft8编码。所以为什么还会这么提示呢。本质上就是虽然文件是utf8编码（用vscode、notepad++等都能自动识别到），但是msvc不认（就是这么傻逼）。看下解释：意思就是utf8不带bom的话msvc是不认的。
+
+> By default, Visual Studio detects a byte-order mark to determine if the source file is in an encoded Unicode format, for example, UTF-16 or UTF-8. If no byte-order mark is found, it assumes the source file is encoded using the current user code page, ...
+
+关于UTF8与UTF8-BOM的对比：https://www.cnblogs.com/flyingeagle/articles/9825302.html
+
+问就是标准就是不带BOM的。怎么办呢。
+
+**解决方案：**可以设置编译器选项，强制msvc用utf8编译。（注意这个选项并不是Qt Creator那个force utf-8 msvc output，那个只是把编译输出输出到65001代码页的终端）
+
+```Makefile
+msvc {
+    QMAKE_CFLAGS += /utf-8
+    QMAKE_CXXFLAGS += /utf-8
+    QMAKE_CXXFLAGS_WARN_ON += -wd4828 # 与GBK项目的编译警告去除
+}
+```
+
+- Qt界面显示乱码。
+
+**原因：**代码里面通篇用的是`QString::fromLocal8Bit("引擎内部句柄转支撑环境句柄发生错误");`这样的写法。Local8Bit就是用系统本地编码方案，而windows平台默认肯定是GBK编码。但是我们前面已经规定编译器编码方案用utf8编码。那肯定会导致乱码。
+
+**解决：去除所有**`fromLocal8Bit`**。**代码页里面直接写的中文字符串，直接使用即可。因为已经强制要求使用utf8编码文件了，那里面中文字符串也是utf8编码，qt肯定可以正常显示。
 
 ## C++ IDE
 
