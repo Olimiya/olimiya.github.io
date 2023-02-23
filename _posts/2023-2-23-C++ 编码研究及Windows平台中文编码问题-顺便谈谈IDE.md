@@ -1,3 +1,11 @@
+---
+title: C++ 编码研究及Windows平台中文编码问题-顺便谈谈IDE
+date: 2023-2-23 23:52:23
+categories: C++
+tags: C++ 编码
+
+---
+
 ## 编码-C++
 
 
@@ -89,15 +97,19 @@ msvc {
 ## C++ IDE
 
 - Visual Studio
+
+  
+
 - VS Code
+
+  
+
 - Qt Creator
+
+  Build工具链：QMake+jom(基于nmake)
+
+  Code Model：Clang
+
+  
+
 - Clion
-
-
-
-### Qt Creator
-
-Build工具链：QMake+jom(基于nmake)
-
-Code Model：Clang
-
