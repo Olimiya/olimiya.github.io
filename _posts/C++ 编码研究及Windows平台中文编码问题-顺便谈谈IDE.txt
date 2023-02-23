@@ -1,0 +1,31 @@
+## 编码-C++
+
+
+
+
+
+## Windows平台的中文编码问题
+
+### Qt 项目+外部GBK编码项目：统一编码问题
+
+先说结论：Qt项目默认编码方式为UTF-8编码，对接查看外部项目时手动选择编码
+
+
+
+
+
+## C++ IDE
+
+- Visual Studio
+- VS Code
+- Qt Creator
+- Clion
+
+
+
+### Qt Creator
+
+Build工具链：QMake+jom(基于nmake)
+
+Code Model：Clang
+
