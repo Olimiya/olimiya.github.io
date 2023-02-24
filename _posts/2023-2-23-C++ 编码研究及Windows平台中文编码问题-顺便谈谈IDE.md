@@ -70,7 +70,7 @@ tags: C++ 编码
 
 > warning: C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失。
 
-**原因：**虽然warning提示我们使用unicode编码，但这里已经将所有文件统一为uft8编码。所以为什么还会这么提示呢。本质上就是虽然文件是utf8编码（用vscode、notepad++等都能自动识别到），但是msvc不认（就是这么傻逼）。看下解释：意思就是utf8不带bom的话msvc是不认的。
+**原因：**虽然warning提示我们使用unicode编码，但这里已经将所有文件统一为uft8编码。所以为什么还会这么提示呢。本质上就是虽然文件是utf8编码（用vscode、notepad++等都能自动识别到），但是msvc不认（就是这么傻逼）。看下解释：意思就是utf8不带bom的话msvc是不认的。[Reference](https://github.com/tnie/quote-demo/issues/4).
 
 > By default, Visual Studio detects a byte-order mark to determine if the source file is in an encoded Unicode format, for example, UTF-16 or UTF-8. If no byte-order mark is found, it assumes the source file is encoded using the current user code page, ...
 
