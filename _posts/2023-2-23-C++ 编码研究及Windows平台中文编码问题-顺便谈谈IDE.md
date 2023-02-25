@@ -3,7 +3,6 @@ title: C++ 编码研究及Windows平台中文编码问题-顺便谈谈IDE
 date: 2023-2-23 23:52:23
 categories: C++
 tags: C++ 编码
-
 ---
 
 ## 编码-C++
@@ -74,10 +73,10 @@ tags: C++ 编码
 
 这里使用的一些编码值。查看编码：[Character sets that support Unicode Han Character 'house, home, residence; family' (U+5BB6) (fileformat.info)](https://www.fileformat.info/info/unicode/char/5bb6/charset_support.htm)
 
-| 中文 |  GBK   |  UTF8  |
-| :--: | :----: | :----: |
-|  国  |  b9fa  |  bcd2  |
-|  家  | e59bbd | e5aeb6 |
+| 中文 | GBK  |  UTF8  |
+| :--: | :--: | :----: |
+|  国  | b9fa | e59bbd |
+|  家  | bcd2 | e5aeb6 |
 
 1. **ANSI（GB2312**）。输出如下（在**936终端**）。分析结果：在文件编码、系统默认编码等完全一致时，可以看到**直接使用中文字符串即可正常输出**（即sa）。且sa在内存中存储的编码方式为系统默认编码ANSI（GB2312）的编码（b9fa）。而**添加了u8前缀**的字符串，最终在内存保存的**编码值就是utf8的编码**（e59bbd），而不管使用的字符集是什么。但是输出到终端就是乱码的。
 
@@ -116,6 +115,20 @@ tags: C++ 编码
    ```
 
    - **猜测**：输出函数内部又调用了Windows的API，使用ANSI编码又进行转换，UTF-8编码值强行按ANSI（GB2312）输出到终端就会乱码，无论终端是什么编码。（printf里面改变的编码值）。而Qt的输出API默认输入为utf8编码，作为输入刚好，然后输出到Windows的终端时，自动转化为ANSI编码输出到终端，因此终端页必须为默认的系统代码页（936）.总结来说就是：**printf要求输入为ANSI编码的、QDebug要求输入为utf8编码的。**
+
+   - 进一步测试：**通过读写文件API，把字节码写入文件**中。测试代码如下：
+
+     ```cpp
+         ofstream output("output_sa.txt");
+         output << sa;
+         output.close(); 
+     
+         ofstream output1("output_sb.txt");
+         output1 << sa;
+         output1.close();
+     ```
+
+     结果为：output_sa为ANSI编码，output_sb为UTF8编码，与内存字节码一致。
 
 2. **UTF-8 without BOM.** 输出如下。
 
@@ -221,16 +234,38 @@ tags: C++ 编码
 
 对于测试的”国家“：
 
-| 中文 |  GBK   |  UTF8  |
-| :--: | :----: | :----: |
-|  国  |  b9fa  |  bcd2  |
-|  家  | e59bbd | e5aeb6 |
+| 中文 | GBK  |  UTF8  |
+| :--: | :--: | :----: |
+|  国  | b9fa | e59bbd |
+|  家  | bcd2 | e5aeb6 |
 
 |                文件编码                |  字符串（内存中）   | u8字符串（内存中）  |
 | :------------------------------------: | :-----------------: | :-----------------: |
 |                  ANSI                  | GBK/printf能够输出  | UTF/QDebug能够输出  |
 | UTF8-BOM or UTF8+/source-charset:utf-8 | GBK/printf能够输出  | UTF/QDebug能够输出  |
 |        /execution-charset:utf-8        | UTF8/QDebug能够输出 | UTF8/QDebug能够输出 |
+
+以一个更简单的例子，说明**编译器读取处理字符串的流程为：**
+
+```cpp
+// utf without bom
+char* str= “国”;
+printf(“%s\n”,str);
+```
+
+1. 首先这个代码文件的文本中”国”这个汉字是以e59bbd三个字节编码的.
+
+2. 当编译器编译这段代码时，执行字符集默认是GBK，那么编译器要决定str的字节内容，就要把文本里保存的字节内容转为GBK，这里就有个值得注意的问题，既然要转换到GBK，就需要知道从什么格式转换到GBK，MSVC怎么知道源格式呢？方法只有一个就是分析你的源文件有没有有BOM,要是有就按照BOM它就认为原格式就是BOM指定的格式，如果没有BOM他就认为你的源码字符集是Locale关联的。刚才说了我们是用UTF8无BOM格式保存的源文件，所以编译器认为源码文本中的”国”是GBK编码保存的。
+
+3. 那从GBK到GBK，MSVC不会进行任何转换，这里有个小问题，提醒一下，这个代码应该是编译不通过的，**因为GBK中汉字是2个字节表示的，而UTF8中是三个字节，所以编译器为了凑数会把”国”字后面的双引号给吃掉，转成了两个GBK汉字编码e59b，bd22（22是引号的UTF8编码）**，没有引号编译器就会报错，最简单的解决办法就是在在后面在加一个汉字变成偶数个就没问题了。
+
+4. 程序运行起来后printf输出到控制台，这时候用到的解析字符集也是GBK的，就会用内存里的e59b，bd22去GBK字符集里找到对应编码的汉字“鍥”（不过好像也没找出来、不知道是不是乱映射的）。这当然就错了。
+
+**C2001错误：常亮中有换行符。**这个错误就是上面说的**文件实际存储编码和编译器读进来时认为的编码**有差别。
+
+- 假设UTF8当做GBK读：一个中文UTF8编码3个字节，如果认为是GBK编码，那就读成1个半GBK中文，半个中文只好吃掉这个中文后面一个字符，一般来说就是双引号。就导致该报错。硬解决的话就是**用偶数个UTF8中文**。
+- 假设GBK当做UTF8读：两个GBK中文编码为4个字节，如果认为是UTF8编码，则翻译成一个GBK中文+一个多出来的字节，只好吃掉后面两个字符，一般来说就是双引号+分号。硬解决方法也是强行补够字节数为3的倍数。
+- **正确的解决方法：**将当前文件编码（无论哪种）与编译器接受的编码匹配上。通过`/source-charset`编译选项设置。
 
 总结方案就是：
 
@@ -246,6 +281,84 @@ Reference:
 3. [MSVC中C++ UTF8中文编码处理探究 - Esfog - 博客园 (cnblogs.com)](https://www.cnblogs.com/Esfog/p/MSVC_UTF8_CHARSET_HANDLE.html)：一个案例分析，但是最后输出到终端的结果（内存中表示为UTF8编码），printf和cout（至少在VS2017）都是无法正常显示的。即使更改chcp 65001也不行。
 4. [(31条消息) Windows下c++字符编码(二)_0_382的博客-CSDN博客_u8“你好世界”](https://blog.csdn.net/m0_37679095/article/details/83830710)：文件编码+编译器+带不带BOM以及相关解释、变换导致乱码等，但是不够详细。
 5. [/utf-8（将源字符集和执行字符集设置为 UTF-8） | Microsoft Learn](https://learn.microsoft.com/zh-cn/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170)：编译选项。
+
+### Qt字符串
+
+首先观测一下QString内部的字节码。QString毕竟是一个封装的类，要观测其内部状态一般只能通过暴露出来的接口，而无论是qDebug，或者转换为QByteArray等（如`toLatin1、toUtf8、toLocal8Bit、toUcs4`）都会经过编码转换。怎么直观观测该类的内部状态呢，**使用序列化**。而作为Qt基本类型，序列化是实现好了的。测试代码：
+
+```cpp
+    QString str = u8"aa"; // 再替换"国家"
+
+    QFile file("qt_test.txt");
+    file.open(QFile::WriteOnly);
+    QDataStream ostream(&file);
+    ostream << str;
+    file.flush();
+    file.close();
+```
+
+对比`aa`（上一行）和`国家`（下一行）的编码，不难找到规律。前四个字节是固定的，后四个字节代表内部的数据。0061就对应`a`的字节码（无论哪种编码方式都是61，判断不出来），而56fd对应`国`的字节码，查找[编码表](https://www.fileformat.info/info/unicode/char/56fd/charset_support.htm)可以发现是UTF16-BE的编码方式。同理5bb6就是对应`家`。结论：**QString内部使用UTF16-BE的编码方式。**
+
+```
+00 00 00 04 00 61 00 61  
+00 00 00 04 56 fd 5b b6
+```
+
+下面主要是测试一下**Qt方面提供的API转换**。测试代码：
+
+```cpp
+    QString str = u8"国家"; 
+	// 测试以下接口：toLatin1、toUtf8、toLocal8Bit、toUcs4
+    auto latin1 = str.toLatin1();
+    qDebug() << "toLatin1" << latin1
+             << "with size of: " << latin1.size(); // "汉字"不在latin1字符集中，所以结果无意义
+
+    auto utf8 = str.toUtf8();
+    qDebug() << "toUtf8" << utf8 << "with size of: " << (utf8.size()); // 返回utf8编码的一串数字
+
+    auto local8bit = str.toLocal8Bit();
+    qDebug() << "toLocal8Bit" << local8bit << "with size of: "
+             << (local8bit.size()); // 返回windows操作系统设置的字符集gb2312的编码
+
+    auto ucs4 = str.toUcs4();
+    qDebug() << "toUcs4" << ucs4
+             << "with size of: " << (ucs4.size()); // 返回ucs4编码组成的QVector，一个汉字占用4字节    
+
+```
+
+结果：
+
+```bash
+toLatin1 "??" with size of:  2
+toUtf8 "\xE5\x9B\xBD\xE5\xAE\xB6" with size of:  6
+toLocal8Bit "\xB9\xFA\xBC\xD2" with size of:  4
+toUcs4 QVector(22269, 23478) with size of:  2
+```
+
+**结论：**
+
+- QString::toUtf8是输出UTF-8编码的字符集
+- QString::toLatin1是相当与ASCii码。
+- QString::Local8bit是本地操作系统设置的字符集编码，一般为GB2312.查看本地操作系统设置的字符集编码，启动cmd ,输入chcp,
+- QString::toUcs4就是Ucs4的编码，用的应该比较少。
+
+Reference：
+
+1. [(31条消息) qt中的toUtf8, toLatin1, Local8bit, toUcs4_土戈的博客-CSDN博客_qt str.tolatin1().data 与 str.toutf8().data 区别](https://blog.csdn.net/f110300641/article/details/106573690)
+2. [(31条消息) C++ | Qt 中文乱码总结【持续更新】_烫青菜的博客-CSDN博客_c++ qt不显示中文](https://blog.csdn.net/weixin_39766005/article/details/117134775)
+3. [(31条消息) qt中toLocal8Bit和toUtf8()有什么区别_hebao0的博客-CSDN博客](https://blog.csdn.net/weixin_46338291/article/details/125529923)
+
+### 统一系统编码UTF8-推荐
+
+上节最后说的，将ANSI即系统默认编码改为UTF8编码，默认代码页为65001。这里单独对这种情况进行测试，并对一些特殊问题进行处理。
+
+理论上来说，如果统一系统编码为UTF8，那肯定是完全投入UTF8的怀抱。会带来非常多好处。像C++编码，所有地方所有的默认都是UTF8编码（源码字符集、执行字符集、解析字符集），基本告别乱码问题。这就是标准的好处。同时对于其他语言，像Python等，同样减少很多麻烦。所以，**强烈建议！**
+
+当然事情都有两面性，肯定会带来一些问题。在这逐一列举并解决一下。
+
+1. **使用GBK编码的旧项目、编码不标准的项目的兼容性问题**：前面说了VS会使用系统代码页的编码方式加载项目文件（或者MS标准的UTF8-BOM也可以）。那如果更改系统编码为UTF8的话，这些项目在VS基本用不了了。**解决方案：**没什么好的解决方案，VS似乎就是这么倔，找了半天没找到能改读取编码的方法。碰到这种项目，要么转为用其他IDE，要么就把系统编码转回来再做吧。
+2. 如果硬要用GBK编码的项目，比如通过Qt Creator使用。首先Qt可以设定项目的默认编码为GBK。其次，要让编译器接收的源文件类型和GBK一直，即指定编译选项：`/source-charset:gb2312`。
+3. **谨慎处理代码中与本地编码关联的部分，如Qt中的Local8Bit接口。**如果代码使用了这种接口，那输出的结果在不同系统编码的基础上就可能会不同（特别是改变了系统编码为UTF8）。比如Qt界面如果使用fromLocal8bit的话，在utf8系统是正常显示，如果改为GBK系统，按前面说的，硬编码的字符串在UTF8系统保存为UTF8编码，然后在GBK系统运行时，local8bit编码是GBK编码，一个UTF8编码字节码当做GBK字节码用，肯定就会导致乱码。这里冲突的原因是：**软件系统内部默认编码UTF8（/UTF8编译选项或编译成exe的平台编码）和Local8Bit这样的接口依赖于不稳定存在的平台编码，这两个编码冲突。**
 
 ### 编码字符集-转载
 
@@ -322,73 +435,11 @@ utf-8是Unix/Linux系统的默认编码，在这些系统上使用char和string�
 
 参考：[(31条消息) c/c++语言printf/wprintf，wchar_t中文字符输出总结_xiayuleWA的博客-CSDN博客_wprintf和printf](https://blog.csdn.net/xiayuleWA/article/details/32140493)
 
-### Qt字符串
-
-测试代码：
-
-```cpp
-QString tmp = u8"国家";
-    auto tmp_utf8 = tmp.toUtf8();
-    auto data = tmp_utf8.data();
-    qDebug() << "data" << data << " size of data" << sizeof(data);
-    //    std::cout << "std" << sizeof(data) << std::endl;
-    int number = 100;
-    auto data_size = sizeof(data) - 2;
-    auto total_size = number * data_size + 2;
-    char *big_data = new char[total_size];
-    memset(big_data, 0, total_size);
-    for (int i = 0; i < number; i++) {
-        memcpy(big_data + i * data_size, data, data_size);
-    }
-    qDebug() << "copy data" << big_data << " size of data" << sizeof(big_data);
-
-    qDebug() << "tmp=" << tmp << endl;
-    qDebug() << "toUtf8" << tmp_utf8 << "with size of: " << sizeof(tmp_utf8)
-             << endl;                                 // 返回utf8编码的一串数字
-    qDebug() << "toLatin1" << tmp.toLatin1() << endl; //"汉字"不在latin1字符集中，所以结果无意义
-    char *p = new char[1 + strlen(tmp.toLatin1().data())];
-    strcpy(p, tmp.toLatin1().data());
-    for (int i = 0; p[i] != '\0'; i++) {
-        printf("0x%02x ", p[i]);
-    }
-    printf("\n");
-    delete p;
-    qDebug() << "toLocal8bit" << tmp.toLocal8Bit()
-             << endl; // 返回windows操作系统设置的字符集gb18030的编码
-    qDebug() << "toUcs4" << tmp.toUcs4() << endl; // 返回ucs4编码组成的QVector，一个汉字占用4字节
-
-    QFile file("test_file_big.txt");
-    file.open(QFile::WriteOnly);
-    file.write(data);
-    file.close();
-```
-
-结果：
-
-```bash
-data 国家  size of data 8
-copy data 国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家  size of data 8
-tmp= "国家" 
-
-toUtf8 "\xE5\x9B\xBD\xE5\xAE\xB6" with size of:  8 
-
-toLatin1 "??" 
-
-toLocal8bit "\xB9\xFA\xBC\xD2" 
-
-toUcs4 QVector(22269, 23478) 
-
-0x3f 0x3f 
-```
-
-R：
-
-1. [(31条消息) qt中的toUtf8, toLatin1, Local8bit, toUcs4_土戈的博客-CSDN博客_qt str.tolatin1().data 与 str.toutf8().data 区别](https://blog.csdn.net/f110300641/article/details/106573690)
-2. [(31条消息) C++ | Qt 中文乱码总结【持续更新】_烫青菜的博客-CSDN博客_c++ qt不显示中文](https://blog.csdn.net/weixin_39766005/article/details/117134775)
-
 ## Windows平台的中文编码总结
 
+**设置系统编码为UTF8！**
 
+中文路径问题可能继续总结一下。
 
 ## 项目经验
 
@@ -472,16 +523,37 @@ msvc {
 
 - Visual Studio
 
-  
+  **Build工具链：**好像是MSBuild。不太理解。感觉很复杂，而且项目配置很多东西不像QMake、CMake这么直观，都隐藏在各种UI中，感觉并不好。
+
+  **编码：**这篇博客毕竟是写编码的总结。所以从这个角度都看一下各家IDE对编码的支持情况。首先VS在这方面表现的依托答辩。与系统绑定度极高，基本没有什么灵活性和自由度。就是前面所说的，VS会使用系统代码页的编码方式加载项目文件（或者MS标准的UTF8-BOM也可以）。那如果更改系统编码为UTF8的话，GBK项目在VS基本用不了。同样的，系统编码是GBK时，UTF8不带BOM的项目也基本用不了（会默认用GBK编码打开）。这个基本上是改不了的。不愧是MS自己家的东西，设计是一脉相承的shit。
+
+  还有更搞笑的，测试了一下新建项目，在系统编码为GBK时，新建项目的第一个文件是UTF8-BOM编码的，后续新建保存文件默认保存却是GBK编码的。好！
 
 - VS Code
 
-  
+  **编码：**自由度最高，每个文件都会猜测编码。毕竟人家就是基于文件，没有原生的项目的概念。
+
+  **问题：**原生只是编辑器，任何事情都要通过插件去做。配置本身虽然不麻烦，但对于即开即用、随手写代码来说是不必要的负担。目前**基于C/C++ Runner插件**自动配置json启动项目，使用mingw的g++编译器。其他方案还有xmake等。都差不多。
+
+  **优点：**万事都要配置既是缺点也是优点。能够自由、方便地集成各种插件。比如Github Copilot Lab等，支持度最高。
 
 - Qt Creator
 
-  Build工具链：QMake+jom(基于nmake)
+  **Build工具链：**QMake+jom(基于nmake)
 
   Code Model：Clang
 
+  **编码：**能够设定项目的默认编码方式。在项目->编辑器->更改全局设置为自定义设置。
+
+  **问题：**
+
+  - 对编码不一致出现一些奇怪的报错，虽然不影响编译。
+  - Clang编写经常卡死。
+
 - Clion
+
+  **Build工具链：**CMake+ninja，最主流的跨平台方案。
+
+  > Ninja 是一个跨平台的构建系统，用 C 编写，旨在具有低级别的构建系统功能，适用于大型项目。它用于构建 C，C++ 和 Fortran 项目。它旨在快速高效，可以用于在 Windows，Linux 和 macOS 上构建项目。它也可以扩展，允许用户定义自定义构建规则和命令。
+
+  **编码：**默认猜测为UTF8编码。
