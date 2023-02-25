@@ -8,9 +8,383 @@ tags: C++ 编码
 
 ## 编码-C++
 
+### 字符串
 
+几个概念：
 
+- 文件编码：UTF-8、ANSI（GB2312）等；
 
+- 系统环境对中文的解释：活动代码页
+
+- 编译器选项：可以指定编译器对源文件的解释编码方式、编译器执行时的解释编码方式。这里就包含集中字符集：
+
+  - 源码字符集（the source character set）：源代码文件是使用何种编码字符集保存的。
+
+    > 就是你的源代码文本文件的字符集，如果你手头有NotePad++这样类似的文本编辑器你可以打开看一下你的字符集，或者用Windows记事本另存为的时候也会显示文本格式。要知道,你的源代码文本文件是以二进制的形式躺在硬盘里的,无论中文英文都一样，当你输入一个汉字后保存关闭,这个汉字就是按照你指定的字符集转换成二进制编码保存下去的，当你在以这个格式打开文件时候，就再按照你指定的字符集把二进制转回来。如果两次使用不同的字符集，也就会出现乱码了。
+
+  - 执行字符集（the execution character set）：源代码经过编译、链接后的可执行文件是使用何种编码字符集保存的，程序实际执行时，**内存中的字符串编码就是执行字符集。**
+
+    > 执行字符集是一种编码，用于在所有预处理步骤之后输入到编译阶段的程序文本。 此字符集用于编译代码中任何字符串或字符文字的内部表示。
+
+    > 在C++里 char* str= “我”;执行字符集决定了这行代码在编译器进行编译的时候str存储的字节到底是什么,你可能会说源码字符集不是已经决定了这个”我”的二进制表示了么,没错，但是这个执行字符集就是让你在这里对它再解释一次。比如我源码字符集可能是UTF8的，但是我可以通过执行字符集来让最终ptr存储的是GBK的字节编码。
+
+  - 运行环境编码：操作系统（或者当前控制台环境）用于显示文字的编码字符集。
+
+    > 最终要还原显示这些二进制字节编码的时候，就需要用到它。比如通过printf把前面的str显示到控制台时，这个printf就会按照解析字符集来解析这些字节编码，找到指定字符显示出来。
+
+- 不同编译器的实现差异。
+- 输出函数。
+
+下面控制变量，集中讨论前三个变量的case。默认选项为：
+
+- 编译器默认为MSVC-2017
+- 系统编码（默认代码页）：936
+- ANSI编码为：GB2312。
+
+测试代码如下。
+
+```cpp
+    char sa[] = "国家"; // 国家的gbk编码为：b9fabcd2；utf编码为：e59bbde5aeb6
+    char sb[] = u8"国家";
+
+    char *p = (char *)sa;
+    int i = 0;
+
+    printf("sizeof(sa) is %d\n", sizeof(sa));
+    for (; i < sizeof(sa); i++) {
+        printf("byte: %x\n", p[i]);
+    }
+    printf("content start\n");
+    printf("%s\n", sa);
+    printf("content end\n");
+
+    i = 0;
+    p = (char *)sb;
+    printf("sizeof(sb) is %d\n", sizeof(sb));
+    for (; i < sizeof(sb); i++) {
+        printf("byte: %x\n", p[i]);
+    }
+    printf("content start\n");
+    printf("%s\n", sb);
+    printf("content end\n");
+
+    qDebug() << "output by qdebug sa: " << sa;
+    qDebug() << "output by qdebug sb:" << sb;
+```
+
+这里使用的一些编码值。查看编码：[Character sets that support Unicode Han Character 'house, home, residence; family' (U+5BB6) (fileformat.info)](https://www.fileformat.info/info/unicode/char/5bb6/charset_support.htm)
+
+| 中文 |  GBK   |  UTF8  |
+| :--: | :----: | :----: |
+|  国  |  b9fa  |  bcd2  |
+|  家  | e59bbd | e5aeb6 |
+
+1. **ANSI（GB2312**）。输出如下（在**936终端**）。分析结果：在文件编码、系统默认编码等完全一致时，可以看到**直接使用中文字符串即可正常输出**（即sa）。且sa在内存中存储的编码方式为系统默认编码ANSI（GB2312）的编码（b9fa）。而**添加了u8前缀**的字符串，最终在内存保存的**编码值就是utf8的编码**（e59bbd），而不管使用的字符集是什么。但是输出到终端就是乱码的。
+
+   ```bash
+   sizeof(sa) is 5
+   byte: ffffffb9
+   byte: fffffffa
+   byte: ffffffbc
+   byte: ffffffd2
+   byte: 0
+   content start
+   国家
+   content end
+   sizeof(sb) is 7
+   byte: ffffffe5
+   byte: ffffff9b
+   byte: ffffffbd
+   byte: ffffffe5
+   byte: ffffffae
+   byte: ffffffb6
+   byte: 0
+   content start
+   鍥藉
+   content end
+   ```
+
+   - 输出函数和终端代码页。
+
+     然而很奇怪的一点是，即使把输出终端改为65001，u8字符串的输出结果还是乱码。输出结果没变。输出的不知道是什么鬼编码。输出到文件用HEX查看长这个样子：`ef bb bf e9 8d a5 e8 97 89 ee 86 8d 0d 0a  `。UTF8显示`鍥藉`. 但是如果使用qDebug()输出，能够正常显示（但要求代码页936）。
+
+   ```cpp
+       qDebug() << "output by qdebug" << sa; 
+       qDebug() << "output by qdebug" << sb; 
+   	// 936：????、国家
+   	// 65001：????、鍥藉
+   ```
+
+   - **猜测**：输出函数内部又调用了Windows的API，使用ANSI编码又进行转换，UTF-8编码值强行按ANSI（GB2312）输出到终端就会乱码，无论终端是什么编码。（printf里面改变的编码值）。而Qt的输出API默认输入为utf8编码，作为输入刚好，然后输出到Windows的终端时，自动转化为ANSI编码输出到终端，因此终端页必须为默认的系统代码页（936）.总结来说就是：**printf要求输入为ANSI编码的、QDebug要求输入为utf8编码的。**
+
+2. **UTF-8 without BOM.** 输出如下。
+
+   ```bash
+   sizeof(sa) is 7
+   byte: ffffffe5
+   byte: ffffff9b
+   byte: ffffffbd
+   byte: ffffffe5
+   byte: ffffffae
+   byte: ffffffb6
+   byte: 0
+   content start
+   鍥藉
+   content end
+   sizeof(sb) is 10
+   byte: ffffffe9
+   byte: ffffff8d
+   byte: ffffffa5
+   byte: ffffffe8
+   byte: ffffff97
+   byte: ffffff89
+   byte: ffffffee
+   byte: ffffff86
+   byte: ffffff8d
+   byte: 0
+   content start
+   閸ヨ棄顔
+   content end
+   output by qdebug sa:  国家
+   output by qdebug sb: 鍥藉
+   ```
+
+   再对比一下**UTF-8 with BOM**:
+
+   ```bash
+   sizeof(sa) is 5
+   byte: ffffffb9
+   byte: fffffffa
+   byte: ffffffbc
+   byte: ffffffd2
+   byte: 0
+   content start
+   国家
+   content end
+   sizeof(sb) is 7
+   byte: ffffffe5
+   byte: ffffff9b
+   byte: ffffffbd
+   byte: ffffffe5
+   byte: ffffffae
+   byte: ffffffb6
+   byte: 0
+   content start
+   鍥藉
+   content end
+   output by qdebug sa:  ????
+   output by qdebug sb: 国家
+   ```
+
+   带不带BOM的区别我们知道如下。对于无BOM的utf-8文件，它会当成ANSI来读取，所以对于普通的不含u8的字符串，就是直接把utf-8的`"国家"`含有的6字节（e5、9b、bd、e5、ae、b6）读进来，认为是每两字节组成的3个ANSI字符（本质上编码值和2个3字节的utf8编码值一样，实际上也不存在这3个二字节的ANSI字符串）。然后对于带u8的字符串，它把这个字符串当成了3个ANSI字符，并对其进行的转码，试图转为3个utf-8字符（e59b这个不存在的ANSI码转为UTF8码），也就是9字节，这显然是越搞越乱。
+
+   > By default, Visual Studio detects a byte-order mark to determine if the source file is in an encoded Unicode format, for example, UTF-16 or UTF-8. If no byte-order mark is found, it assumes the source file is encoded using the current user code page, ..
+
+   而对于带BOM的情况，接受的源文件就是UTF8编码的版本，但是看sa的输出结果，可以知道它是将**源编码转为了内部代码页（936）对应的ANSI编码**，转为了b9fa编码（能够**正常输出**）。而对于带u8的版本，就是正常保留了utf8的编码值。
+
+3. **编译器选项：**/utf-8、/source-charset:utf-8、/execution-charset:utf-8。
+
+   - 其中**/source-charset:utf-8**：就是强制设定源代码文件为UTF-8编码。这个针对于UTF-8 without BOM的文件较为好用。支持标准不带BOM。所以UTF-8 **without BOM + /source-charset:utf-8 = UTF-8.**
+
+   - **/execution-charset:utf-8**：就是前面所说的执行字符集，是编译代码后任何字符串或字符文字的内部表示（exe中保存的方式），也是加载到内存中实际的编码方式。指定该方法后，无论源文件是哪种类型，对于带u8和不带u8的字符串内存输出都一样：
+
+     ```bash
+     sizeof(sa) is 7
+     byte: ffffffe5
+     byte: ffffff9b
+     byte: ffffffbd
+     byte: ffffffe5
+     byte: ffffffae
+     byte: ffffffb6
+     byte: 0
+     content start
+     鍥藉
+     content end
+     sizeof(sb) is 7
+     byte: ffffffe5
+     byte: ffffff9b
+     byte: ffffffbd
+     byte: ffffffe5
+     byte: ffffffae
+     byte: ffffffb6
+     byte: 0
+     content start
+     鍥藉
+     content end
+     output by qdebug sa:  国家
+     output by qdebug sb: 国家
+     ```
+
+   - **/utf-8：**=/source-charset:utf-8 + /execution-charset:utf-8。
+
+**总结：**
+
+对于测试的”国家“：
+
+| 中文 |  GBK   |  UTF8  |
+| :--: | :----: | :----: |
+|  国  |  b9fa  |  bcd2  |
+|  家  | e59bbd | e5aeb6 |
+
+|                文件编码                |  字符串（内存中）   | u8字符串（内存中）  |
+| :------------------------------------: | :-----------------: | :-----------------: |
+|                  ANSI                  | GBK/printf能够输出  | UTF/QDebug能够输出  |
+| UTF8-BOM or UTF8+/source-charset:utf-8 | GBK/printf能够输出  | UTF/QDebug能够输出  |
+|        /execution-charset:utf-8        | UTF8/QDebug能够输出 | UTF8/QDebug能够输出 |
+
+总结方案就是：
+
+- **对于Qt的项目：UTF8+/source-charset:utf-8+/execution-charset:utf-8，即UTF8+/utf-8即可**。输出都使用qDebug接口，需要用C++接口时，使用QString的toLocal8bit即可。
+- 对于普通C++项目：使用**UTF8-BOM or UTF8+/source-charset:utf-8**即可。或者全部使用默认的**ANSI**（VS就会默认用系统编码打开你的文件，还没办法设置，如果用VS，还是ANSI吧）。
+
+还有一个跟上述讨论完全不同的思路，将ANSI即系统默认编码改为UTF8编码，默认代码页为65001，更改方式见下面”UTF8标准统一下的问题“章节。这样的话系统每个地方编码都可统一为UTF8编码。
+
+Reference:
+
+1. [(31条消息) C++中的中文编码 乱码的根源及解决方案_「已注销」的博客-CSDN博客_c++输入中文汉字是乱码](https://blog.csdn.net/LU_ZHAO/article/details/104981662)：三种编码集。
+2. [C++ 字符编码问题探究和中文乱码的产生 | Micooz (apporz.com)](https://apporz.com/2015/01/02/cpp-encoding-problem/)：完整的示例探索：文本编码+编译器等对比。但是关于输出乱码的描述有问题，输出导致的乱码无法通过更改编码查看到正确的显示。
+3. [MSVC中C++ UTF8中文编码处理探究 - Esfog - 博客园 (cnblogs.com)](https://www.cnblogs.com/Esfog/p/MSVC_UTF8_CHARSET_HANDLE.html)：一个案例分析，但是最后输出到终端的结果（内存中表示为UTF8编码），printf和cout（至少在VS2017）都是无法正常显示的。即使更改chcp 65001也不行。
+4. [(31条消息) Windows下c++字符编码(二)_0_382的博客-CSDN博客_u8“你好世界”](https://blog.csdn.net/m0_37679095/article/details/83830710)：文件编码+编译器+带不带BOM以及相关解释、变换导致乱码等，但是不够详细。
+5. [/utf-8（将源字符集和执行字符集设置为 UTF-8） | Microsoft Learn](https://learn.microsoft.com/zh-cn/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170)：编译选项。
+
+### 编码字符集-转载
+
+刚刚一直用了像UTF-8、GB2312等字符集，再来梳理一下字符集的概念。
+
+原文链接：https://blog.csdn.net/m0_37679095/article/details/83722165
+
+我们知道最早的英文字符采用ascii，因为英文字符很少，因此一个char就够用了。但是由于处理其他语言的需求，8位的char显然不够用，这就要求更多位数的编码。
+
+- **GBK和ANSI**
+
+在中国，我们的国标是GBK，(准确的说经历了GB2312->GBK->GB18030的发展过程），我们常说的汉字占两个字节也就是来源于此。
+
+微软作为一个世界大厂，采用什么编码呢？微软虽然在语言支持上很上心，不过编码却很混乱，微软的默认编码是ANSI，这是个什么东西呢？这其实就是大杂烩，英文还是ascii，中文是GBK，港澳台使用它们那边的Big5……等等。这些编码并不统一，是非常没有兼容性的。其实ANSI不是一种编码，不过我就这么简单的说了，关于ANSI具体是什么，你可以看看这篇文章：https://www.cnblogs.com/malecrab/p/5300486.html。
+
+由于我们主要还是说中文问题，以下提到ANSI的地方，你应该立即联想到，中文是采用GBK编码的。其中，值得一提的是GBK编码是双字节的，这是中文字符占两个字节说法的由来。
+
+- **Unicode**
+
+由于各地编码的不统一，于是产生了Unicode，Unicode其实是一个标准，而不是一种编码。Unicode现有两套标准，ucs2和ucs4，一开始认为双字节够用，就是ucs2，后来发现双字节不够用，那就扩展到4字节吧，于是就有了ucs4。Unicode现在主要有三种实现方式。即utf-8，utf-16，和utf-32。
+
+- **utf-16**
+
+先讲utf-16，这是采用双字节表示的，遵从ucs2。在存储时，按两个字节的排布顺序，可以分为UTF-16LE（Little Endian，小端字节序）和UTF-16BE（Big Endian，大端字节序），微软所说的Unicode默认就是 UTF-16LE。注意微软后来也搞了Unicode，但是微软自己鼓吹的Unicode只是其中一种实现方式而已。
+
+utf-16后来发现双字节不够用，于是增加了采用一对双字节来表示一个字符，这其中也包括一些生僻汉字，之后我们将会提到具体例子。所以其实标准的utf-16也是变字长的编码，很多人认为utf-16编码是定长编码，这其实是错误的。此外，utf-16不等价于ucs2，可以认为ucs2是定长编码（双字节），而utf-16是ucs2的扩展。
+
+- **utf-32**
+
+再说utf-32，既然双字节不够用，那就用四字节吧，于是就有了ucs4标准和utf-32实现方式。utf-32所有的字符都采用4个字节，这才是真正的定长编码。utf-32等价于ucs4，utf-32也存在存储顺序的问题。由于utf-32基本没人用，就不详细展开。
+
+不过，我们知道代码源文件还是ascii字符主导。而在网页上，大量的标记都是ascii字符。utf-32要用4字节，utf-16也要2字节，都比最初的ascii长，这显然是非常浪费空间的，更何况网络传输数据越少越好，因此utf-16和utf-32都是不合用的。
+
+- **utf-8**
+
+utf-8解决了这个问题，utf-8是完全的变长编码，兼容ascii，也就是ascii编码部分保留，其他的字符根据情况有2，3，4字节。其中特别值得注意的是汉字一般是三个字节，也有四个字节的生僻字情况。（如果你拥护utf-8的话，请不要在说汉字占2字节这样的傻话了。）
+
+utf-8是Unix/Linux系统的默认编码，在这些系统上使用char和string，无论输入输出都是使用utf-8，因此一般不必担心编码问题。在这些系统上，string = "你好世界"的size()是12，也就是一个字符三个字节，是没有任何问题的。你编辑c++源代码基本不必担心编码问题。
+
+但是在windows下就很复杂了。windows自带Notepad是默认ANSI编码的。Notepad++和VS Code是默认utf-8编码，未经配置的gvim以及visual studio默认也是ANSI。关于c++源代码写中文的注意事项，将在之后的文章中详细说明。
+
+**总结**
+
+现在我们来总结一下编码我们提到的编码知识：
+
+- Unicode是编码规范而不是编码方式，它有两个标准，主要有三种实现方式。
+
+- utf-8和utf-16都是变长编码，只有utf-32是定长编码。
+
+- 网页上基本采用utf-8作为编码方式，utf-32基本很难用到。
+
+- 微软系统采用的ANSI默认编码，兼容ascii，其中文采用GBK编码，汉字为双字节，兼容性不好。
+
+- 微软也有Unicode，它使用的Unicode是utf-16，不兼容ascii，中文为双字节，少数为4字节。
+
+- Unix/Linux采用utf-8变长编码，兼容ascii，其中中文一般为3字节，少数4字节。
+
+**建议**
+
+现在我们来讨论c++的字符编码问题。
+
+在**Unix/Linux系统下，我建议一律采用utf-8编码**，一般没有任何问题。不过值得注意的一点是此系统下，wchat_t和wstring表示的字符是4字节的字符，应该就是utf-32了。然而utf-32除了定长这一特点之外，没有任何好处，太浪费空间，用处很少，没必要去碰它。不过wstring的问题我们之后还会讨论，你将会了解更多。
+
+在**Windows**下，如果你不得不在源文件写中文，而且又不想看我之后几篇又臭又长的详解，你可以**使用Qt专有的QString**，或者使用Visual Studio来写代码。前者的的**默认编码是utf-16**，如果不用生僻字，甚至可以按照定长编码的方式处理字符。后者是依靠微软这个IDE强大的功能，可以处理各种编码的源文件。
+
+更多关于UTF-8等编码：
+
+- [UTF-8 - 维基百科，自由的百科全书 (wikipedia.org)](https://zh.wikipedia.org/wiki/UTF-8)
+- [UTF-16 - 维基百科，自由的百科全书 (wikipedia.org)](https://zh.wikipedia.org/wiki/UTF-16)
+
+### 宽字节
+
+这部分感觉不常用也没必要用。暂且不管了。
+
+参考：[(31条消息) c/c++语言printf/wprintf，wchar_t中文字符输出总结_xiayuleWA的博客-CSDN博客_wprintf和printf](https://blog.csdn.net/xiayuleWA/article/details/32140493)
+
+### Qt字符串
+
+测试代码：
+
+```cpp
+QString tmp = u8"国家";
+    auto tmp_utf8 = tmp.toUtf8();
+    auto data = tmp_utf8.data();
+    qDebug() << "data" << data << " size of data" << sizeof(data);
+    //    std::cout << "std" << sizeof(data) << std::endl;
+    int number = 100;
+    auto data_size = sizeof(data) - 2;
+    auto total_size = number * data_size + 2;
+    char *big_data = new char[total_size];
+    memset(big_data, 0, total_size);
+    for (int i = 0; i < number; i++) {
+        memcpy(big_data + i * data_size, data, data_size);
+    }
+    qDebug() << "copy data" << big_data << " size of data" << sizeof(big_data);
+
+    qDebug() << "tmp=" << tmp << endl;
+    qDebug() << "toUtf8" << tmp_utf8 << "with size of: " << sizeof(tmp_utf8)
+             << endl;                                 // 返回utf8编码的一串数字
+    qDebug() << "toLatin1" << tmp.toLatin1() << endl; //"汉字"不在latin1字符集中，所以结果无意义
+    char *p = new char[1 + strlen(tmp.toLatin1().data())];
+    strcpy(p, tmp.toLatin1().data());
+    for (int i = 0; p[i] != '\0'; i++) {
+        printf("0x%02x ", p[i]);
+    }
+    printf("\n");
+    delete p;
+    qDebug() << "toLocal8bit" << tmp.toLocal8Bit()
+             << endl; // 返回windows操作系统设置的字符集gb18030的编码
+    qDebug() << "toUcs4" << tmp.toUcs4() << endl; // 返回ucs4编码组成的QVector，一个汉字占用4字节
+
+    QFile file("test_file_big.txt");
+    file.open(QFile::WriteOnly);
+    file.write(data);
+    file.close();
+```
+
+结果：
+
+```bash
+data 国家  size of data 8
+copy data 国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家国家  size of data 8
+tmp= "国家" 
+
+toUtf8 "\xE5\x9B\xBD\xE5\xAE\xB6" with size of:  8 
+
+toLatin1 "??" 
+
+toLocal8bit "\xB9\xFA\xBC\xD2" 
+
+toUcs4 QVector(22269, 23478) 
+
+0x3f 0x3f 
+```
+
+R：
+
+1. [(31条消息) qt中的toUtf8, toLatin1, Local8bit, toUcs4_土戈的博客-CSDN博客_qt str.tolatin1().data 与 str.toutf8().data 区别](https://blog.csdn.net/f110300641/article/details/106573690)
+2. [(31条消息) C++ | Qt 中文乱码总结【持续更新】_烫青菜的博客-CSDN博客_c++ qt不显示中文](https://blog.csdn.net/weixin_39766005/article/details/117134775)
 
 ## Windows平台的中文编码总结
 
