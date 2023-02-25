@@ -1,5 +1,5 @@
 ---
-title: C++ 编码研究及Windows平台中文编码问题-顺便谈谈IDE
+title: 【超详细】C++ 编码研究及Windows平台中文编码问题-顺便谈谈IDE
 date: 2023-2-23 23:52:23
 categories: C++
 tags: C++ 编码
@@ -277,10 +277,10 @@ printf(“%s\n”,str);
 Reference:
 
 1. [(31条消息) C++中的中文编码 乱码的根源及解决方案_「已注销」的博客-CSDN博客_c++输入中文汉字是乱码](https://blog.csdn.net/LU_ZHAO/article/details/104981662)：三种编码集。
-2. [C++ 字符编码问题探究和中文乱码的产生 | Micooz (apporz.com)](https://apporz.com/2015/01/02/cpp-encoding-problem/)：完整的示例探索：文本编码+编译器等对比。但是关于输出乱码的描述有问题，输出导致的乱码无法通过更改编码查看到正确的显示。
+2. [C++ 字符编码问题探究和中文乱码的产生 \| Micooz (apporz.com)](https://apporz.com/2015/01/02/cpp-encoding-problem/)：完整的示例探索：文本编码+编译器等对比。但是关于输出乱码的描述有问题，输出导致的乱码无法通过更改编码查看到正确的显示。
 3. [MSVC中C++ UTF8中文编码处理探究 - Esfog - 博客园 (cnblogs.com)](https://www.cnblogs.com/Esfog/p/MSVC_UTF8_CHARSET_HANDLE.html)：一个案例分析，但是最后输出到终端的结果（内存中表示为UTF8编码），printf和cout（至少在VS2017）都是无法正常显示的。即使更改chcp 65001也不行。
 4. [(31条消息) Windows下c++字符编码(二)_0_382的博客-CSDN博客_u8“你好世界”](https://blog.csdn.net/m0_37679095/article/details/83830710)：文件编码+编译器+带不带BOM以及相关解释、变换导致乱码等，但是不够详细。
-5. [/utf-8（将源字符集和执行字符集设置为 UTF-8） | Microsoft Learn](https://learn.microsoft.com/zh-cn/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170)：编译选项。
+5. [/utf-8（将源字符集和执行字符集设置为 UTF-8） \| Microsoft Learn](https://learn.microsoft.com/zh-cn/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170)：编译选项。
 
 ### Qt字符串
 
@@ -345,7 +345,7 @@ toUcs4 QVector(22269, 23478) with size of:  2
 Reference：
 
 1. [(31条消息) qt中的toUtf8, toLatin1, Local8bit, toUcs4_土戈的博客-CSDN博客_qt str.tolatin1().data 与 str.toutf8().data 区别](https://blog.csdn.net/f110300641/article/details/106573690)
-2. [(31条消息) C++ | Qt 中文乱码总结【持续更新】_烫青菜的博客-CSDN博客_c++ qt不显示中文](https://blog.csdn.net/weixin_39766005/article/details/117134775)
+2. [(31条消息) C++ \| Qt 中文乱码总结【持续更新】_烫青菜的博客-CSDN博客_c++ qt不显示中文](https://blog.csdn.net/weixin_39766005/article/details/117134775)
 3. [(31条消息) qt中toLocal8Bit和toUtf8()有什么区别_hebao0的博客-CSDN博客](https://blog.csdn.net/weixin_46338291/article/details/125529923)
 
 ### 统一系统编码UTF8-推荐
@@ -358,7 +358,7 @@ Reference：
 
 1. **使用GBK编码的旧项目、编码不标准的项目的兼容性问题**：前面说了VS会使用系统代码页的编码方式加载项目文件（或者MS标准的UTF8-BOM也可以）。那如果更改系统编码为UTF8的话，这些项目在VS基本用不了了。**解决方案：**没什么好的解决方案，VS似乎就是这么倔，找了半天没找到能改读取编码的方法。碰到这种项目，要么转为用其他IDE，要么就把系统编码转回来再做吧。
 2. 如果硬要用GBK编码的项目，比如通过Qt Creator使用。首先Qt可以设定项目的默认编码为GBK。其次，要让编译器接收的源文件类型和GBK一直，即指定编译选项：`/source-charset:gb2312`。
-3. **谨慎处理代码中与本地编码关联的部分，如Qt中的Local8Bit接口。**如果代码使用了这种接口，那输出的结果在不同系统编码的基础上就可能会不同（特别是改变了系统编码为UTF8）。比如Qt界面如果使用fromLocal8bit的话，在utf8系统是正常显示，如果改为GBK系统，按前面说的，硬编码的字符串在UTF8系统保存为UTF8编码，然后在GBK系统运行时，local8bit编码是GBK编码，一个UTF8编码字节码当做GBK字节码用，肯定就会导致乱码。这里冲突的原因是：**软件系统内部默认编码UTF8（/UTF8编译选项或编译成exe的平台编码）和Local8Bit这样的接口依赖于不稳定存在的平台编码，这两个编码冲突。**
+3. **谨慎处理代码中与本地编码关联的部分，如Qt中的Local8Bit接口。**如果代码使用了这种接口，那输出的结果在不同系统编码的基础上就可能会不同（特别是改变了系统编码为UTF8）。比如Qt界面如果使用fromLocal8bit的话，在utf8系统是正常显示，如果改为GBK系统，按前面说的，硬编码的字符串在UTF8系统保存为UTF8编码，然后在GBK系统运行时，local8bit编码是GBK编码，一个UTF8编码字节码当做GBK字节码用，肯定就会导致乱码。这里冲突的原因是：**软件系统内部默认编码UTF8（/UTF8编译选项或编译成exe的平台编码）和Local8Bit这样的接口依赖于不稳定存在的平台编码，这两个编码冲突。不要使用硬编码+平台依赖接口**
 
 ### 编码字符集-转载
 
@@ -439,7 +439,26 @@ utf-8是Unix/Linux系统的默认编码，在这些系统上使用char和string�
 
 **设置系统编码为UTF8！**
 
-中文路径问题可能继续总结一下。
+**中文路径问题**继续总结一下：
+
+- 首先中不中文的没有区别，主要看调用的接口接受什么类型的编码方式，如果接受的编码方式中编码范围包含中文（如UTF8、GBK）那只要按照要求的编码方式输入即可。这个时候，因为涉及路径和文件，一般的接口最终应该都会使用平台相关的接口，比如Windows API，那这个时候接口很可能是依赖于系统默认编码方式的。所以**最好转为系统编码方式，比如Qt的toLocal8Bit接口。**
+
+- 这里留了一个坑无法理解的，就是Qt编译项目路径不能带中文的问题。系统编码改了UTF8也不行。看了**QMake源码全称用的是fromLocal8Bit也不行**，很疑惑。核心错误代码如下。但是神TM用toLatin1转了却能输出出来。==暂时留着这个坑下次编译一下qt源码再验证一下。==
+
+  ```cpp
+              QString fn = Option::normalizePath(*pfile);
+              if(!QFile::exists(fn)) {
+                  fprintf(stderr, "Cannot find file: %s.\n",
+                          QDir::toNativeSeparators(fn).toLatin1().constData());
+                  exit_val = 2;
+                  continue;
+              }
+  ```
+
+  ```bash
+   qmake E:\中文\Lee\GenerateLicense.pro
+  Cannot find file: E:\中文\Lee\GenerateLicense.pro.
+  ```
 
 ## 项目经验
 
