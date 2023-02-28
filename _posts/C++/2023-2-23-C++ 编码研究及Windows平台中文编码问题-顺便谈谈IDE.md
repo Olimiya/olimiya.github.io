@@ -429,6 +429,12 @@ utf-8是Unix/Linux系统的默认编码，在这些系统上使用char和string�
 - [UTF-8 - 维基百科，自由的百科全书 (wikipedia.org)](https://zh.wikipedia.org/wiki/UTF-8)
 - [UTF-16 - 维基百科，自由的百科全书 (wikipedia.org)](https://zh.wikipedia.org/wiki/UTF-16)
 
+查阅编码表：
+
+UCS2：http://www.columbia.edu/kermit/ucs2.html
+
+各种字符集编码：https://www.fileformat.info/info/unicode/char/6c49/charset_support.htm
+
 ### 宽字节
 
 这部分感觉不常用也没必要用。暂且不管了。
