@@ -1,7 +1,7 @@
 ---
 title: Windows Terminal + WSL + Ubuntu + 图形化 总结
 date: 2022-03-27 19:49
-categories: [教程]
+categories: [通用]
 tags: [Windows Terminal, WSL]
 ---
 
