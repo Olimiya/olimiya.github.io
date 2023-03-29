@@ -4,7 +4,7 @@
 theme: jekyll-theme-chirpy
 
 # 仅当你的站点类型是 Github Pages 项目并且没有自定义域名时，修改下面的值为 '/项目名'。
-baseurl: ''
+baseurl: ""
 
 # 站点的语言 › https://www.w3.org/International/questions/qa-choosing-language-tags
 # 如果在文件夹 `_data/locales` 下存在同名文件，则布局语言也会改变，
@@ -75,8 +75,8 @@ google_analytics:
   id: 'G-NKV7205XPP'              # 填入你的 Google Analytics ID
   # Google Analytics 页面浏览量设置
   pv:
-    proxy_endpoint:   # 填入 Google App Engine 的 Google Analytics superProxy 端点
-    cache_path:       # pv 数据本地缓存，对 GFW 区域的人而言很好
+    proxy_endpoint: # 填入 Google App Engine 的 Google Analytics superProxy 端点
+    cache_path: # pv 数据本地缓存，对 GFW 区域的人而言很好
 
 # 设置首选配色方案
 #
@@ -88,12 +88,20 @@ google_analytics:
 #     light  - 使用亮色方案
 #     dark   - 使用暗色方案
 #
-theme_mode:   # [light|dark]
+theme_mode: # [light|dark]
+
+# 启用动画背景特效
+backgroud_animation: false
+
+# 启用鼠标点击特效
+mouse_click_effect: false
 
 # 图像 CDN 端点。
-# 注意一旦被分配，CDN 网址会被加在所有图像（网站头像和帖子图像）路径上。
+# 注意一旦被分配，CDN 网址会被加在
+# 所有以 '/' 开始的图像（网站头像和帖子中的图像）路径上
+# 
 # 例如，'https://cdn.com'
-img_cdn: ''
+img_cdn: ""
 
 # 侧边栏的头像，支持本地或 CROS 资源
 avatar: /avatar.jpg
@@ -122,7 +130,7 @@ comments:
   # active 选项可以是如下：
   # disqus 评论系统 > https://disqus.com/
   disqus:
-    shortname:    # 填入你的 disqus shorname › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
+    shortname: # 填入你的 disqus shorname › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances 评论系统 › https://utteranc.es/
   utterances:
     repo:         # <Github 用户名>/<仓库名>
@@ -151,10 +159,10 @@ comments:
 # 自托管静态资产，可选 › https://github.com/cotes2020/chirpy-static-assets
 assets:
   self_host:
-    enabled:      # 布尔值, 置空表示否
+    enabled: # 布尔值, 置空表示否
     # 指定 Jekyll 环境，置空意味着都启用
     # 仅在 `assets.self_host.enabled` 为 'true' 时生效
-    env:          # [development|production]
+    env: # [development|production]
 
 # 每一页的帖子数量
 paginate: 10
@@ -163,7 +171,7 @@ paginate: 10
 
 kramdown:
   syntax_highlighter: rouge
-  syntax_highlighter_opts:   # Rouge 设置 › https://github.com/jneen/rouge#full-options
+  syntax_highlighter_opts: # Rouge 设置 › https://github.com/jneen/rouge#full-options
     css_class: highlight
     # default_lang: console
     span:
@@ -179,11 +187,11 @@ collections:
 
 defaults:
   - scope:
-      path: ''          # 空字符串意味着项目里的所有文件
+      path: "" # 空字符串意味着项目里的所有文件
       type: posts
     values:
       layout: post
-      comments: true    # 在帖子中启用评论
+      comments: true # 在帖子中启用评论
       # 右侧边栏的默认显示
       lastmod: true
       trending_tags: true
@@ -197,8 +205,8 @@ defaults:
     values:
       comments: false
   - scope:
-      path: ''
-      type: tabs             # 参考 `site.collections`
+      path: ""
+      type: tabs # 参考 `site.collections`
     values:
       layout: page
       permalink: /:title/
@@ -224,12 +232,12 @@ compress_html:
     envs: [development]
 
 exclude:
-  - '*.gem'
-  - '*.gemspec'
+  - "*.gem"
+  - "*.gemspec"
   - tools
   - README.md
   - LICENSE
-  - gulpfile.js
+  - rollup.config.js
   - node_modules
   - package*.json
 

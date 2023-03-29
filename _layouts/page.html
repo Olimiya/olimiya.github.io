@@ -11,7 +11,7 @@ layout: default
     <div class="post pl-1 pr-1 pl-md-2 pr-md-2">
 
     {% capture _content %}
-      {% if layout.refactor or page.layout == 'page' %}
+      {% if layout.refactor or page.layout == 'page' and page.permalink != '/404.html' %}
         {% include refactor-content.html content=content %}
       {% else %}
         {{ content }}

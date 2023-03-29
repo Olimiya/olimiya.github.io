@@ -4,7 +4,7 @@
 
 @mixin dark-syntax {
   --highlight-bg-color: #252525;
-  --highlighter-rouge-color: #de6b18;
+  --highlighter-rouge-color: #f8f8f2;
   --highlight-lineno-color: #6c6c6d;
   --inline-code-bg: #272822;
   --code-header-text-color: #6a6a6a;
@@ -13,10 +13,13 @@
   --clipboard-checked-color: #2bcc2b;
   --filepath-text-color: #bdbdbd;
 
-  pre { color: #bfbfbf; } /* override Bootstrap */
+  /* override Bootstrap */
+  pre {
+    color: #bfbfbf;
+  }
 
-  .highlight {
-    .gp { color: #818c96; }
+  .highlight .gp {
+    color: #818c96;
   }
 
   /* syntax highlight colors from https://raw.githubusercontent.com/jwarby/pygments-css/master/monokai.css */
@@ -26,7 +29,6 @@
   .highlighter-rouge .err { color: #960050; background-color: #1e0010; } /* Error */
   .highlighter-rouge .k { color: #66d9ef; } /* Keyword */
   .highlighter-rouge .l { color: #ae81ff; } /* Literal */
-  .highlighter-rouge .n { color: #f8f8f2; } /* Name */
   .highlighter-rouge .o { color: #f92672; } /* Operator */
   .highlighter-rouge .p { color: #f8f8f2; } /* Punctuation */
   .highlighter-rouge .cm { color: #75715e; } /* Comment.Multiline */

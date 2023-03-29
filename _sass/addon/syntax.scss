@@ -2,44 +2,37 @@
 * The syntax highlight.
 */
 
-@import "colors/light-syntax";
-@import "colors/dark-syntax";
-@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@5.2/distr/fira_code.css);
+@import 'colors/light-syntax';
+@import 'colors/dark-syntax';
 
 html {
   @media (prefers-color-scheme: light) {
     &:not([data-mode]),
-    &[data-mode="light"] {
+    &[data-mode='light'] {
       @include light-syntax;
     }
 
-    &[data-mode="dark"] {
+    &[data-mode='dark'] {
       @include dark-syntax;
     }
   }
 
   @media (prefers-color-scheme: dark) {
     &:not([data-mode]),
-    &[data-mode="dark"] {
+    &[data-mode='dark'] {
       @include dark-syntax;
     }
 
-    &[data-mode="light"] {
+    &[data-mode='light'] {
       @include light-syntax;
     }
   }
 }
 
-/* -- Codes Snippet -- */
-
-$code-radius: 6px;
+/* -- code snippets -- */
 
 %code-snippet-bg {
   background: var(--highlight-bg-color);
-}
-
-%code-snippet-radius {
-  border-radius: $code-radius;
 }
 
 %code-snippet-padding {
@@ -49,7 +42,7 @@ $code-radius: 6px;
 
 .highlighter-rouge {
   @extend %code-snippet-bg;
-  @extend %code-snippet-radius;
+  @extend %rounded;
 
   color: var(--highlighter-rouge-color);
   margin-top: 0.5rem;
@@ -64,7 +57,7 @@ $code-radius: 6px;
 }
 
 .highlight {
-  @extend %code-snippet-radius;
+  @extend %rounded;
   @extend %code-snippet-bg;
 
   @at-root figure#{&} {
@@ -101,19 +94,14 @@ $code-radius: 6px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
-    user-select: none;
-  }
-
-  /* set the dollar sign to non-selectable */
-  .gp {
-    -webkit-user-select: none;
-    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
   }
 } /* .highlight */
 
 code {
   -webkit-hyphens: none;
+  -ms-hyphens: none;
   hyphens: none;
   font-family: "Fira Code", "Microsoft Yahei", monospace;
   font-variant-ligatures: none;
@@ -167,7 +155,7 @@ td.rouge-code {
 
 /* Hide line numbers for default, console, and terminal code snippets */
 div {
-  &[class^="highlighter-rouge"],
+  &[class^='highlighter-rouge'],
   &.nolineno,
   &.language-plaintext.highlighter-rouge,
   &.language-console.highlighter-rouge,
@@ -187,8 +175,6 @@ div {
 
   $code-header-height: 2.25rem;
 
-  border-top-left-radius: $code-radius;
-  border-top-right-radius: $code-radius;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -198,15 +184,14 @@ div {
     $dot-size: 0.75rem;
     $dot-margin: 0.5rem;
 
-    content: "";
+    content: '';
     display: inline-block;
     margin-left: 1rem;
     width: $dot-size;
     height: $dot-size;
     border-radius: 50%;
     background-color: var(--code-header-muted-color);
-    box-shadow:
-      ($dot-size + $dot-margin) 0 0 var(--code-header-muted-color),
+    box-shadow: ($dot-size + $dot-margin) 0 0 var(--code-header-muted-color),
       ($dot-size + $dot-margin) * 2 0 0 var(--code-header-muted-color);
   }
 
@@ -241,9 +226,9 @@ div {
   /* clipboard */
   button {
     @extend %cursor-pointer;
+    @extend %rounded;
 
     border: 1px solid transparent;
-    border-radius: $code-radius;
     height: $code-header-height;
     width: $code-header-height;
     padding: 0;
@@ -288,7 +273,7 @@ div {
 
 @media all and (max-width: 576px) {
   .post-content {
-    > div[class^="language-"] {
+    > div[class^='language-'] {
       @include ml-mr(-1.25rem);
 
       border-radius: 0;
