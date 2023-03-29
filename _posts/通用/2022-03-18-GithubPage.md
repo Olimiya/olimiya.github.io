@@ -6,6 +6,22 @@ tags: 网站 博客
 description: .
 ---
 
+
+
+## 迁移
+
+从CSDN迁移过来的博客，很久过去发现了一个大坑，就是CSDN虽然没开启防盗链，图床还是可以访问到的，但CSDN插入图片的语法是长这个样子的：
+
+```
+https://img-blog.csdnimg.cn/20210406200221894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70
+```
+
+URL中包含了图片显示方式，用","分隔。
+
+这个语法在本地Typora能够正常显示，但是发布到网页端以后这个URL无法正常显示（应该主要是URL带了逗号）。
+
+
+
 ## Github Page + Jekyll + Chirpy
 
 这是一句测试。

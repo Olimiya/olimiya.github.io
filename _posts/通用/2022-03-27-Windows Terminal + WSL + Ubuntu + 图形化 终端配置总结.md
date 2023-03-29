@@ -24,7 +24,7 @@ tags: [Windows Terminal, WSL]
 ## Linux子系统WSL
 
 启动方式：
-​​​​​​​​​​​​​​![启动Linux子系统](https://img-blog.csdnimg.cn/e91dbafc30114d8c8e3cf38d0194444b.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+​​​​​​​​​​​​​​![启动Linux子系统](https://picbed.olimi.icu//img/202303291937644.png)
 
  启动后忘记要不要重启了，最好重启一下吧，windows是这样的。
 
@@ -113,11 +113,11 @@ bcdedit /set hypervisorlaunchtype auto
 
 关于安装路径：在新电脑安装，安装完成后无法移动位置。但是设置->系统->存储->更改新内容的保存位置，倒是可以在重装之后装到指定磁盘去。个人装到了D盘，就是多出了很多文件夹有点难看。
 
-![image-20220802162801767](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20220802162801767-16594325879651.png)
+![image-20220802162801767](https://picbed.olimi.icu//img/202303291937645.png)
 
 关于右键菜单：似乎安装在D盘，自动添加的右键菜单也没了。不过没事，刚好可以自定义。方法：使用ContextMenuManager添加。
 
-![image-20220802162745286](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20220802162745286-16594325943023.png)
+![image-20220802162745286](https://picbed.olimi.icu//img/202303291937646.png)
 
 -d 是指定目录为当前目录。
 
@@ -134,13 +134,13 @@ bcdedit /set hypervisorlaunchtype auto
 先放一下最终成果图。
 
 - CMD
- ![在这里插入图片描述](https://img-blog.csdnimg.cn/10b8625b0b974eb8ba49ececc2ab99f6.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+ ![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937647.png)
 
 - Power Shell
-![在这里插入图片描述](https://img-blog.csdnimg.cn/75e40438dc3a4112afb4ce58d9d097c2.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937648.png)
 
 - Ubuntu
-![在这里插入图片描述](https://img-blog.csdnimg.cn/d48e851c42ab46f08c54d9474f4f576e.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937649.png)
 其实首要的需求是**清晰**看到命令行信息，**对比度高**，不要特别沉闷（默认的CMD），几个终端之间有一定**区分度**。只要满足这些条件即可。最终选定的配置是：
 
 - CMD：One Half Dark主题，开亚克力，不透明度0.8.
@@ -160,7 +160,7 @@ bcdedit /set hypervisorlaunchtype auto
 
 2. git-bash中文问题：在**GIT安装目录\etc\bash.bashrc**最后添加：export LANG="zh_CN.UTF-8"
 export LC_ALL="zh_CN.UTF-8"
-![在这里插入图片描述](https://img-blog.csdnimg.cn/c87ed40e7d584c75b88924f0c3b85820.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937650.png)
 
 ### 更新+2 Git-Bash闪烁
 
@@ -335,7 +335,7 @@ $ pwd.exe
 ```
 
 所以在Windows里面可以直接使用这个路径访问WSL里面的文件。可以在文件系统右键我的电脑添加一个网络映射器，固定上述路径：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/a4efb33eb23e44d080f261c453d2f2a1.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937651.png)
 ​
 反过来在WSL中可以直接使用cd访问windows文件，注意windows的硬盘是通过mnt挂载
 
@@ -404,7 +404,7 @@ sh install.sh
 以上几种插件是需要额外安装，其他一些插件在./plugins中有，可直接启用。oh my zsh 本人使用主题是**amuse**，可以在<https://github.com/ohmyzsh/ohmyzsh/wiki/Themes>这里查看各种主题。
 
 贴个成品图：
-​​![在这里插入图片描述](https://img-blog.csdnimg.cn/3a9cb487114d4ab5ab1677d984561447.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQWxlemFu,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+​​![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937652.png)
 ​
 
 ## 服务器图形用户界面-远程桌面登录
@@ -524,7 +524,7 @@ alias vncinit="vnclicense -add BQ24G-PDXE4-KKKRS-WBHZE-F5RCA"
 
 6. 使用VNC Viewer工具访问。[RealVNC](https://www.realvnc.com/en/connect/download/viewer/?spm=a2c4g.11186623.0.0.51f42d32DpaFkW)下载Viewer，还是付费软件好用，虽然只是server付费。输入：`IP:端口号`。VNC默认端口为5900，每建立一个连接，VNC 端口号 +1。比如第一个VNC窗口，开放的端口就是5901. 也可以用MobaXterm软件连接。
 
-   ![image-20221115221854928](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115213339061.png)
+   ![image-20221115221854928](https://picbed.olimi.icu//img/202303291937653.png)
 
    *（经典死老鼠）*
 
@@ -551,7 +551,7 @@ alias vncinit="vnclicense -add BQ24G-PDXE4-KKKRS-WBHZE-F5RCA"
    sudo service xrdp start
    ```
 
-   ![img](https://img2020.cnblogs.com/blog/1234034/202009/1234034-20200930083230253-965519395.jpg)
+   ![img](https://picbed.olimi.icu//img/202303291937654.jpg)
 
 4. 默认情况下，Xrdp会读取使用`/etc/ssl/private/ssl-cert-snakeoil.key`文件，但该文件仅由ssl-cert组的成员读取。 因此你需要运行以下命令以将`xrdp`用户添加到ssl-cert组：
 
@@ -574,7 +574,7 @@ windows可以通过远程桌面客户端连接了，xrdp的端口和rdp一样都
 
 > 当然，xrdp不仅可以选择xorg，还能选择vnc-any，也就是选择了这个，你可以连接vnc服务端，也就是 xrdp不仅可以和xorg配合，也能和vnc4server、vino、tightvncserver等vnc服务端配置使用。
 
-![image-20221115213339061](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115220102750.png)
+![image-20221115213339061](https://picbed.olimi.icu//img/202303291937655.png)
 
 （这里因为没指定分辨率，而电脑屏幕是4k屏，没放缩的情况下显得很小）
 
@@ -590,7 +590,7 @@ X Window System 常被简称为X11或X，其功能包括窗口的绘制、移动
 
 一般Xserver默认不允许直接网络传输，这时候就可以借助ssh通道进行显示。进一步的原理：
 
-![sshforwarding.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/630a6cf2d5284c6cbf98a43bb5b8d567~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.image?)
+![sshforwarding.png](https://picbed.olimi.icu//img/202303291937656.png)
 
 流程：
 
@@ -598,13 +598,13 @@ X Window System 常被简称为X11或X，其功能包括窗口的绘制、移动
 2. 在ssh会话中执行图形程序，ssh客户端本质上只负责输入和显示，程序的执行在sshd上。假设在命令行上运行xclock，这在pstree查看sshd进程可以看到`sshd(822369)---bash(822539)---xclock(1014618)`。xclock的父进程为bash。该程序与6010进行TCP通信，将X11协议数据发送到6010,sshd再将该数据放入ssh通道与ssh客户端进行通信。
 3. ssh运行在客户端，该端同时运行Xserver.ssh与Xserver建立连接，将ssh通道中的X11协议数据发送到Xserver。
 
-![X11 转发设置](https://goteleport.com/blog/_next/static/media/x11-forwarding-setup.c67f3da7.png)
+![X11 转发设置](https://picbed.olimi.icu//img/202303291937657.png)
 
 **实践：**最简单的方案就是使用MobaXterm，自带内置的X Server，可以直接接管远程系统的图形化绘制请求。在连接ssh时默认会勾选x11-forwarding，就可以接收x11转发请求。剩下的是X11 Client端的配置。
 
-![image-20221115222834486](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115221854928.png)
+![image-20221115222834486](https://picbed.olimi.icu//img/202303291937658.png)
 
-![image.png](https://bbs-img.huaweicloud.com/blogs/img/20220615/1655256876815937924.png)
+![image.png](https://picbed.olimi.icu//img/202303291937659.png)
 
 如果登录时显示这个界面，就需要配置连接的远程客户端：
 
@@ -628,7 +628,7 @@ X Window System 常被简称为X11或X，其功能包括窗口的绘制、移动
 
 以上是看来的未亲测。用云服务器测试（未安装桌面，小、穷、破），连进去就可以用：
 
-![image-20221115220102750](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115222834486.png)
+![image-20221115220102750](https://picbed.olimi.icu//img/202303291937660.png)
 
 以下是个人配置：
 
@@ -658,7 +658,7 @@ xclock
 sudo apt-get install x11-apps
 ```
 
-![image-20221115223152999](https://raw.githubusercontent.com/Olimiya/PicBed/main/image-20221115223152999.png)
+![image-20221115223152999](https://picbed.olimi.icu//img/202303291937661.png)
 
 **总结：**可以发现，这种途径是使用远程系统，需要使用GUI，但系统默认未安装图形界面时，最简便的途径。特别是一般情况下服务端空间宝贵，资源珍贵，使用GUI机会少，用X11转发流量是非常有性价比的行为。
 
