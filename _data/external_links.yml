@@ -10,7 +10,7 @@
   name: 此博客的 Github 仓库
   automatic_name: false
   link: https://github.com/Olimiya/olimiya.github.io
-- icon: icon-nihil-blog
+- icon: icon-olimi-blog
   use_iconfont: true
   name: Nihil的个人博客
   automatic_name: false

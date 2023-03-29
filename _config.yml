@@ -68,7 +68,8 @@ iconfont_css:
   # 此 css 包含以 'icon-nihil-' 为前缀的图标，为我博客内容使用的图标，可删除。
   - //at.alicdn.com/t/font_2451185_tgvgeuen2lh.css
   # 添加你的 Iconfont 图标链接
-  # - 
+  # Olimi的素材库
+  - //at.alicdn.com/t/c/font_3984570_lw52x2hi5e.css
 
 google_analytics:
   id: 'G-NKV7205XPP'              # 填入你的 Google Analytics ID
