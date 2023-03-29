@@ -249,11 +249,13 @@ jobs:
 
 ### 替换图床
 
-图床就更加简单了，个人使用的工具链是：Typora + Picgo-Core + COS。
+图床就更加简单了，个人使用的工具链是：Typora + Pic-Go App ~~Picgo-Core~~ + COS。为什么改为用Pic-Go App呢。因为Pic-Go Core在批量上传图片的时候经常出现乱序，只能一张一张图片上传比较难受。转为PicGo以后暂时没有这个问题。
 
 - Typora端：在偏好设置->图像->[说明](https://support.typora.io/Upload-Image/#picgo-core-command-line-opensource)。
 
-- Picgo-Core：[配置文件 \| PicGo-Core](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html)。配置Config.json.
+- PicGo APP:[PicGo is Here | PicGo](https://picgo.github.io/PicGo-Doc/zh/guide/)
+
+- ~~Picgo-Core：[配置文件 \| PicGo-Core](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html)。配置Config.json.~~
 
   ```json
   {

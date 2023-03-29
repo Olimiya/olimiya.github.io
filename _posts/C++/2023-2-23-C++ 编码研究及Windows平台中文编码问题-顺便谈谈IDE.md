@@ -249,8 +249,8 @@ tags: C++ 编码
 
 ```cpp
 // utf without bom
-char* str= “国”;
-printf(“%s\n”,str);
+char* str= "国";
+printf("%s\n",str);
 ```
 
 1. 首先这个代码文件的文本中”国”这个汉字是以e59bbd三个字节编码的.
