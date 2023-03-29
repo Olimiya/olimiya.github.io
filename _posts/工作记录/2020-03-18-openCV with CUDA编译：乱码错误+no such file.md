@@ -15,7 +15,7 @@ tags: 记录 OpenCV
 ## 探讨
 
 由于VS输出报错中，主要error是no such file，个人查找了相应位置，发现**项目中C/C++附加包含库目录是有相应头文件的**，而且修改源码，输出#include时也有相应提示，所以**此时我认为库目录路径应该是有的，那问题就是出在乱码上**。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200318171957702.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://picbed.olimi.icu//img/202303291926829.png)
 此时查阅了一些其他人遇到的问题，如[https://blog.csdn.net/Angle_Cal/article/details/79376233](https://blog.csdn.net/Angle_Cal/article/details/79376233)，提出的问题是因为MSVC编译器编译出现乱码，并就此更改了各个编译器地址但都没用。
 **在与该博客作者探讨了一番后无果。据说这是CUDA以往的bug，在新版本中已经修复了，所以也没见身边小伙伴遇到过。**
 
@@ -26,7 +26,7 @@ tags: 记录 OpenCV
 
 经过上面的发现，那显然是nvcc编译.cu的时候真的找不到库的头文件（虽然在C/C++附加包含目录中有）。
 **解决方案就是在cmake时，手动指定nvcc的参数，设置--include-path**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200318172908741.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://picbed.olimi.icu//img/202303291926830.png)
 这时本人的设置：
 
 ```bash

@@ -125,8 +125,9 @@ void UDPThread::startUDPClient()
 
  3. **方案3** **放弃阻塞**
 
- 	看了上面几张帖子，尤其是：
- 	![在这里插入图片描述](https://img-blog.csdnimg.cn/20210404223343302.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FsZXphbg==,size_16,color_FFFFFF,t_70)
- 	忽然才意识到没有必要非要使用阻塞式，毕竟监听线程具有大循环，一次超时继续监听下一次即可。因此**直接取消阻塞式设置**即解决了问题.....
+      看了上面几张帖子，尤其是：
+
+      ![在这里插入图片描述](https://picbed.olimi.icu//img/202303291928361.png)忽然才意识到没有必要非要使用阻塞式，毕竟监听线程具有大循环，一次超时继续监听下一次即可。因此**直接取消阻塞式设置**即解决了问题.....
+
  4. **方案4** 放弃Winsock
     QUDPSocket不香吗... 不过据说项目组其他人测试了Qt UDP服务，存在bug，未亲测。WinAPI是真的ugly..
