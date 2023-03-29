@@ -56,21 +56,6 @@ google_site_verification: g9ctzJLPpJ3wh5a6Bk6kvp7UAB5N22zIe2V2PZE72TA      # 填
 # ↑ --------------------------
 # `jekyll-seo-tag` 设置结束
 
-# 自定义 Iconfont 的图标链接。 › https://www.iconfont.cn/
-# 需要添加自己的 Iconfont 图标，请在 Iconfont 中新建项目，
-# 加入图标到项目，选择 Font Class，查看在线链接，并将其拷贝到下面。
-#
-# 注意：请不要与项目原本使用的图标重名，请全局搜索以确保该名称没被使用。
-# 一个比较好的办法是修改 Iconfont 项目的 FontClass/Symbol 前缀为其他值。
-iconfont_css: 
-  # 此 css 包含以 'icon-' 为前缀的图标，为模板的核心图标，请勿删除。
-  - //at.alicdn.com/t/font_2440352_86vrobdp9vu.css
-  # 此 css 包含以 'icon-nihil-' 为前缀的图标，为我博客内容使用的图标，可删除。
-  - //at.alicdn.com/t/font_2451185_tgvgeuen2lh.css
-  # 添加你的 Iconfont 图标链接
-  # Olimi的素材库
-  - //at.alicdn.com/t/c/font_3984570_2ces8o0nir1.css
-
 google_analytics:
   id: 'G-NKV7205XPP'              # 填入你的 Google Analytics ID
   # Google Analytics 页面浏览量设置
@@ -159,7 +144,7 @@ comments:
 # 自托管静态资产，可选 › https://github.com/cotes2020/chirpy-static-assets
 assets:
   self_host:
-    enabled: # 布尔值, 置空表示否
+    enabled: true # 布尔值, 置空表示否
     # 指定 Jekyll 环境，置空意味着都启用
     # 仅在 `assets.self_host.enabled` 为 'true' 时生效
     env: # [development|production]
