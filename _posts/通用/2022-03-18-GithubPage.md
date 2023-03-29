@@ -20,6 +20,17 @@ URL中包含了图片显示方式，用","分隔。
 
 这个语法在本地Typora能够正常显示，但是发布到网页端以后这个URL无法正常显示（应该主要是URL带了逗号）。
 
+> 在 Markdown 中添加图片时，如果图片 URL 中含有逗号，可能会导致图片无法正常显示。这是因为逗号在 Markdown 中是分隔符之一，会被解释为下一个参数的开始。
+>
+> 为了解决这个问题，你可以将图片 URL 用引号括起来，或者使用 URL 编码来替换逗号。下面是两种解决方法的示例：
+>
+> ```
+> ![图片描述](“https://example.com/image,with,commas.jpg”)
+> 
+> ![图片描述](https://example.com/image%2Cwith%2Ccommas.jpg)
+> 逗号被替换为 %2C
+> ```
+
 
 
 ## Github Page + Jekyll + Chirpy
