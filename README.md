@@ -1,13 +1,15 @@
-基于 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题定制化的个人博客，[点击此处进入](https://nihil.cc/)。
+基于 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题定制化的个人博客，博客内容已转移到 `blog` 分支，`master` 将作为模板使用。[此处进入我的博客](https://nihil.cc/)。
 
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
-与原版 Chirpy 不同的点：
+使用之前请先参考原版 Chirpy 的[使用教程](https://chirpy.cotes.page/posts/getting-started/)。
+
+与原版 Chirpy 不同的点在于：
 
 * 在原版支持的评论系统 [Disqus](https://disqus.com/)，[Utterances](https://utteranc.es/) 和 [Giscus](https://giscus.app/zh-CN) 外，增加对 [Waline](https://waline.js.org/) 评论系统的支持，参见 `_config.yml` 里的 `comments.waline`。
 * 使用[知乎式 404 界面](https://404.life/564.html)，可以返回首页或者返回上一页。
 * 新增了分享到 Line，QQ，QQ 空间和微博，参见 `_data/share.yml`。
-* 使用 [iconfont](https://www.iconfont.cn/) 取代 [Font Awesome](https://fontawesome.com/)，有更多的图标选择空间，参见 `_config.yml` 里的 `iconfont_css`。
+* 使用 [iconfont](https://www.iconfont.cn/) 取代 [Font Awesome](https://fontawesome.com/)，有更多的图标选择空间。注意：自 2022-12-29 起，iconfont 路径配置从 `_config.yml` 迁移到了 `_data/assets/cross_origin.yml` 及 `_data/assets/self_host.yml` 中的 `iconfont.css`，以支持下载 css 到本地。
 * 右侧边栏添加了外部链接块，参见 `_data/external_links.yml`。
 * 可以自由地控制在帖子中显示右侧边栏哪些块。参见 `_config.yml` 里的 `panel`。
 * 添加了子域页。参见 `_data/subdomain.yml`。不需要该页面的情况下删除 `_tabs/subdomain.md` 即可。
@@ -36,6 +38,7 @@
     | Python | `run="python"` | [Online Python](https://www.online-python.com/) |
     | Rust | `run="rust"` | [Rust Playground](https://play.rust-lang.org/) |
 
-如果喜欢我这个定制化的版本，欢迎 Fork，但是请修改 `_config.yml` 中 `google_analytics` 的 `id`， `waline` 的 `server`，以及 `CNAME` 文件中配置的域名，请勿使用我的配置。
+* (2022-11-29) 支持同名的多级 categories，如果你是从旧版本更新到当前版本，请在本地运行 `bundle update`。原版 Chirpy 使用 `jekyll-archives` 插件生成 categories，该插件将所有 categories 视为同等级别关系，这导致在 Chirpy 中无法使用相同名字的二级 categories，这个问题在本分支中得以修复，可以使用任何同名的多级 categories 了。注意：由于将 `jekyll-archives` 下载到本地 `.gems` 目录，并且将 `Gemfile` 指向本地路径，因此本地需要 `bundle update` 之后才能生效。
+* (2022-12-12) 添加了动画背景效果和鼠标点击效果，考虑到不是所有人都喜欢特效，默认情况下这两都是禁用的。如需开启，请在 `_config.yml` 中配置 `backgroud_animation` 和 `mouse_click_effect` 为 `true`。
 
 通常，每周会至少 merge 一次 [`upstream/master`](https://github.com/cotes2020/jekyll-theme-chirpy) 以追踪新的功能。

@@ -1,53 +1,56 @@
-<!--
-  The Head
--->
+<!-- The Head -->
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+  >
 
   {% if page.layout == 'home' or page.layout == 'post' %}
+    {% if site.google_analytics.pv.proxy_endpoint %}
+      <meta name="pv-proxy-endpoint" content="{{ site.google_analytics.pv.proxy_endpoint }}">
+    {% endif %}
 
-  {% if site.google_analytics.pv.cache_path %}
-  <meta name="pv-cache-path" content="{{ site.google_analytics.pv.cache_path | relative_url }}">
-  {% endif %}
-
-  {% endif %}
-
-  {% if page.layout == 'post' %}
-  {% if site.comments == 'valine' and page.comments == true %}
-  <div id="gbk_nick"></div>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-  <script src="https://cdn1.lncld.net/static/js/3.4.2/av-min.js"></script>
-  {% endif %}
+    {% if site.google_analytics.pv.cache_path %}
+      <meta name="pv-cache-path" content="{{ site.google_analytics.pv.cache_path | relative_url }}">
+    {% endif %}
   {% endif %}
 
   {% capture seo_tags %}
     {% seo title=false %}
   {% endcapture %}
 
-  {% if page.image.path %}
-    {% capture target %}"{{ site.url }}{{ page.image.path | relative_url }}"{% endcapture %}
+  {% if page.image %}
+    {% assign img = page.image.path | default: page.image %}
 
-    {% if site.img_cdn contains '//' %}
-      <!-- it's a cross-origin URL -->
-      {% capture replacement %}"{{ site.img_cdn }}{{ page.img_path }}{{ page.image.path }}"{% endcapture %}
-    {% else %}
-      <!-- it's a local file path -->
-      {%- capture replacement -%}
-        "{{ site.url }}{{ site.baseurl }}{{ site.img_cdn }}{{ page.img_path }}{{ page.image.path }}"
-      {%- endcapture -%}
-    {% endif %}
+    {% unless img contains '://' %}
+      {% assign img_path = page.img_path | append: '/' | append: img | replace: '//', '/' %}
+      {% capture target %}"{{ img | absolute_url }}"{% endcapture %}
 
-    {% assign seo_tags = seo_tags | replace: target, replacement %}
+      {% if site.img_cdn contains '//' %}
+        <!-- it's a cross-origin URL -->
+        {% capture replacement %}"{{ site.img_cdn }}{{ img_path }}"{% endcapture %}
+      {% else %}
+        <!-- it's a local file path -->
+        {%- capture replacement -%}
+          "{{ site.img_cdn | append: '/' | append: img_path | replace: '//', '/' | absolute_url }}"
+        {%- endcapture -%}
+      {% endif %}
 
+      {% assign seo_tags = seo_tags | replace: target, replacement %}
+    {% endunless %}
   {% endif %}
 
   {{ seo_tags }}
 
   <title>
-    {%- unless page.layout == "home" -%}
-    {{ page.title | flatify | append: " | "}}
+    {%- unless page.layout == 'home' -%}
+    {{ page.title | flatify | append: ' | '}}
     {%- endunless -%}
     {{ site.title | flatify }}
   </title>
@@ -55,23 +58,19 @@
   {% include favicons.html %}
 
   {% if site.resources.ignore_env != jekyll.environment and site.resources.self_hosted %}
-
     <link href="{{ site.data.assets[origin].webfonts | relative_url }}" rel="stylesheet">
 
   {% else %}
-
     {% for cdn in site.data.assets[origin].cdns %}
       <link rel="preconnect" href="{{ cdn.url }}" {{ cdn.args }}>
       <link rel="dns-prefetch" href="{{ cdn.url }}" {{ cdn.args }}>
     {% endfor %}
 
     <link rel="stylesheet" href="{{ site.data.assets[origin].webfonts | relative_url }}">
-
   {% endif %}
 
   <!-- GA -->
-  {% if jekyll.environment == 'production'
-      and site.google_analytics.id != empty and site.google_analytics.id %}
+  {% if jekyll.environment == 'production' and site.google_analytics.id != empty and site.google_analytics.id %}
     <link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
 
@@ -80,7 +79,11 @@
 
     {% if site.google_analytics.pv.proxy_endpoint %}
       {% assign proxy_url = site.google_analytics.pv.proxy_endpoint
-          | replace: "https://", "" | split: "/" | first | prepend: "https://" %}
+        | replace: 'https://', ''
+        | split: '/'
+        | first
+        | prepend: 'https://'
+      %}
       <link rel="preconnect" href="{{ proxy_url }}" crossorigin="use-credentials">
       <link rel="dns-prefetch" href="{{ proxy_url }}">
     {% endif %}
@@ -95,17 +98,17 @@
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 
   <!-- icon font -->
-  {% if site.iconfont_css %}
-  {% for css in site.iconfont_css %}
-  <link rel="stylesheet" href="{{ css }}">
+  {% if site.data.assets[origin].iconfont.css %}
+  {% for css in site.data.assets[origin].iconfont.css %}
+  <link rel="stylesheet" href="{{ css | relative_url }}">
   {% endfor %}
   {% endif %}
   
   <!-- Fira Code -->
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/tonsky/FiraCode@5.2/distr/fira_code.css">
+  <link rel="stylesheet" href="{{ site.data.assets[origin].firacode.css | relative_url }}">
 
   {% if site.panel.post.toc and page.toc %}
-    <link rel="stylesheet" href="{{ site.data.assets[origin].bootstrap-toc.css | relative_url }}">
+    <link rel="stylesheet" href="{{ site.data.assets[origin].toc.css | relative_url }}">
   {% endif %}
 
   {% if page.layout == 'page' or page.layout == 'post' %}
@@ -116,7 +119,11 @@
   <!-- JavaScript -->
 
   <script src="{{ site.data.assets[origin].jquery.js | relative_url }}"></script>
-  <script async src="//cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.min.js"></script>
+  <script async src="{{ site.data.assets[origin].socket-io-client.js | relative_url }}"></script>
+
+  {% if site.mouse_click_effect %}
+    <script async src="/assets/js/lib/fireworks.js"></script>
+  {% endif %}
 
   {% unless site.theme_mode %}
     {% include mode-toggle.html %}

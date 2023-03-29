@@ -18,7 +18,7 @@ layout: compress
 
   {% include head.html %}
 
-  <body data-spy="scroll" data-target="#toc" data-topbar-visible="true">
+  <body data-topbar-visible="true">
 
     {% include sidebar.html %}
 
@@ -65,6 +65,10 @@ layout: compress
     {% include search-loader.html %}
 
     {% include js-selector.html %}
+
+    {% if site.backgroud_animation %}
+      {% include animated-background.html %}
+    {% endif %}
 
   </body>
 
