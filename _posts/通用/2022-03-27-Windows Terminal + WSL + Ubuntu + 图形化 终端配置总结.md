@@ -64,6 +64,8 @@ wsl --set-default-version 2
 Add-AppxPackage .\app_name.appx
 ```
 
+**更新+4：**win11+WSL+oh-my-zsh最近感觉特别卡，有一段时间没用了。但是好几台电脑都这么卡。有点忍不了。对比一下，有一个没有oh-my-zsh终端的却没那么卡。找了一下。主要是这个[帖子](https://stackoverflow.com/questions/68972448/why-is-wsl-extremely-slow-when-compared-with-native-windows-npm-yarn-processing)。然后从WSL2设置为WSL1就好转了。`wsl --set-version Ubuntu 1`.
+
 **更新+3：**最近升级win11后按照上述做法，似乎这样安装ubuntu程序还是会安装到C盘（然后可以使用ubuntu config这样的命令配置终端）。然后还是需要根据下面这个导出、导入的配置完成系统镜像路径的更换。
 
 然后升级win11的话，一台电脑的wsl直接没了用不了（提示`WslRegisterDistribution failed with error: 0x80070050`），但系统镜像存在之前指定的路径，一台电脑的wsl还有但是安装的ubuntu包没了。如果wsl没了，**只需要：**使用原本安装ubuntu的安装包（或者重新安装相同版本的ubuntu），安装完成后替换系统镜像（即ext4.vhdx）即可
@@ -100,6 +102,56 @@ bcdedit /set hypervisorlaunchtype auto
 然后重启电脑。否则会显示：
 
 > 请启用虚拟机平台 Windows 功能并确保在 BIOS 中启用虚拟化。
+
+### zsh
+
+上面这里截取的命令可以看到，命令行提示跟默认的终端不一致，是因为我配置了zsh shell。这是非常建议使用的一个终端，非常强大（至少大神都是这么说的）。
+
+> 目前常用的 Linux 系统和 OS X 系统的默认 Shell 都是 bash，但是真正强大的 Shell 是深藏不露的 zsh， 这货绝对是马车中的跑车，跑车中的飞行车，史称『终极 Shell』，但是由于配置过于复杂，所以初期无人问津，很多人跑过来看看 zsh 的配置指南，什么都不说转身就走了。直到有一天，国外有个穷极无聊的程序员开发出了一个能够让你快速上手的zsh项目，叫做「oh my zsh」，Github 网址是：<https://github.com/robbyrussell/oh-my-zsh。这玩意就像「X>天叫你学会 C++」系列，可以让你神功速成，而且是真的。
+> ​
+> 安装也非常简单：
+
+  1. 安装zs
+
+```bash
+1.先看下自己有哪一些 shell
+cat /etc/shells
+2.如果没有 zsh 需要安装
+sudo apt-get install zsh #Ubuntu Linux 记得先升级下 apt-get
+sudo yum install zsh #Redhat Linux
+3.安装完成后设置zsh 为默认shell
+chsh -s /bin/zsh #安装完成后设置当前用户使用 zsh 并重启 wsl
+```
+
+- 安装oh my zsh
+
+```bash
+wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+sh install.sh
+```
+
+- 添加插件和修改主题
+
+```bash
+# 安装 Oh My Zsh 插件
+	1.安装 zsh-syntax-highlighting（代码高亮）
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+	2.安装 zsh-autosuggestions（自动建议）
+	git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+	3.安装 zsh-completions（自动补全）
+	git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
+	4.zsh-com­ple­tions 插件需要将 autoload -U compinit && compinit 添加到.zshrc，输入命令可一键添加：
+	[ -z "`grep "autoload -U compinit && compinit" ~/.zshrc`" ] && echo "autoload -U compinit && compinit" >> ~/.zshrc
+	5.把需要启用的插件写入到配置文件中，使用 sed 命令一键操作：
+	sed -i '/^plugins=/c\plugins=(git sudo z zsh-syntax-highlighting zsh-autosuggestions zsh-completions colored-man-pages)' ~/.zshrc	
+	6.最后应用配置
+	source ~/.zshrc
+```
+
+以上几种插件是需要额外安装，其他一些插件在./plugins中有，可直接启用。oh my zsh 本人使用主题是**amuse**，可以在<https://github.com/ohmyzsh/ohmyzsh/wiki/Themes>这里查看各种主题。
+
+贴个成品图：
+​​![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937652.png)
 
 ## Windows Terminal
 
@@ -355,57 +407,6 @@ $ pwd
 ~~在ubuntu的终端脚本（.bashrc、.zshrc等）添加一句命令，cd \~.~~
 
 后续因为集成到文件目录右键菜单，直接在此处打开WSL，所以取消了这个设置。确实没啥必要。真要过去直接输入~就行了。
-
-### zsh
-
-上面这里截取的命令可以看到，命令行提示跟默认的终端不一致，是因为我配置了zsh shell。这是非常建议使用的一个终端，非常强大（至少大神都是这么说的）。
-
-> 目前常用的 Linux 系统和 OS X 系统的默认 Shell 都是 bash，但是真正强大的 Shell 是深藏不露的 zsh， 这货绝对是马车中的跑车，跑车中的飞行车，史称『终极 Shell』，但是由于配置过于复杂，所以初期无人问津，很多人跑过来看看 zsh 的配置指南，什么都不说转身就走了。直到有一天，国外有个穷极无聊的程序员开发出了一个能够让你快速上手的zsh项目，叫做「oh my zsh」，Github 网址是：<https://github.com/robbyrussell/oh-my-zsh。这玩意就像「X>天叫你学会 C++」系列，可以让你神功速成，而且是真的。
-​
-安装也非常简单：
-
- 1. 安装zs
-
-```bash
-1.先看下自己有哪一些 shell
-cat /etc/shells
-2.如果没有 zsh 需要安装
-sudo apt-get install zsh #Ubuntu Linux 记得先升级下 apt-get
-sudo yum install zsh #Redhat Linux
-3.安装完成后设置zsh 为默认shell
-chsh -s /bin/zsh #安装完成后设置当前用户使用 zsh 并重启 wsl
-```
-
-- 安装oh my zsh
-
-```bash
-wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-sh install.sh
-```
-
-- 添加插件和修改主题
-
-```bash
-# 安装 Oh My Zsh 插件
-	1.安装 zsh-syntax-highlighting（代码高亮）
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-	2.安装 zsh-autosuggestions（自动建议）
-	git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-	3.安装 zsh-completions（自动补全）
-	git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
-	4.zsh-com­ple­tions 插件需要将 autoload -U compinit && compinit 添加到.zshrc，输入命令可一键添加：
-	[ -z "`grep "autoload -U compinit && compinit" ~/.zshrc`" ] && echo "autoload -U compinit && compinit" >> ~/.zshrc
-	5.把需要启用的插件写入到配置文件中，使用 sed 命令一键操作：
-	sed -i '/^plugins=/c\plugins=(git sudo z zsh-syntax-highlighting zsh-autosuggestions zsh-completions colored-man-pages)' ~/.zshrc	
-	6.最后应用配置
-	source ~/.zshrc
-```
-
-以上几种插件是需要额外安装，其他一些插件在./plugins中有，可直接启用。oh my zsh 本人使用主题是**amuse**，可以在<https://github.com/ohmyzsh/ohmyzsh/wiki/Themes>这里查看各种主题。
-
-贴个成品图：
-​​![在这里插入图片描述](https://picbed.olimi.icu//img/202303291937652.png)
-​
 
 ## 服务器图形用户界面-远程桌面登录
 
