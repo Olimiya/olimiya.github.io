@@ -174,13 +174,7 @@ function displayPageviews(data) {
   let hasInit = getInitStatus();
   const rows = data.rows; /* could be undefined */
 
-  if ($('#post-list').length > 0) {
-    /* the Home page */
-    $('.post-preview').each(function () {
-      const path = $(this).find('a').attr('href');
-      tacklePV(rows, path, $(this).find('.pageviews'), hasInit);
-    });
-  } else if ($('.post').length > 0) {
+  if ($('.post').length > 0) {
     /* the post */
     const path = window.location.pathname;
     tacklePV(rows, path, $('#pv'), hasInit);
@@ -193,8 +187,8 @@ function fetchProxyPageviews() {
       type: 'GET',
       url: PvOpts.getProxyMeta(),
       dataType: 'jsonp',
-      jsonpCallback: 'displayPageviews',
       success: (data) => {
+        displayPageviews(data);
         PvStorage.saveProxyCache(JSON.stringify(data));
       },
       error: (jqXHR, textStatus, errorThrown) => {
