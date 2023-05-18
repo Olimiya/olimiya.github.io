@@ -2,37 +2,9 @@
 
 <footer>
   <div class="container px-lg-4">
-    <div class="d-flex justify-content-center align-items-center text-muted mx-md-3">
-      <p>
-        {%- capture _platform -%}
-        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-        </script>
-      <div class="container pl-lg-4 pr-lg-4">
-        <div class="d-flex justify-content-between align-items-center text-muted ml-md-3 mr-md-3">
-          <div class="footer-left">
-            <p class="mb-0">
-              © {{ 'now' | date: "%Y" }}
-              <a href="{{ site.social.links[0] }}">{{ site.social.name }}</a>.
-              {% if site.data.locales[site.lang].copyright.brief %}
-              <span data-toggle="tooltip" data-placement="top"
-                title="{{ site.data.locales[site.lang].copyright.verbose }}">{{
-                site.data.locales[site.lang].copyright.brief }}</span>
-              {% endif %}
-              <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人。</span>
-            </p>
-          </div>
-
-          <a href="http://beian.miit.gov.cn/" target="_blank">粤ICP备2022142323号-1</a>
-          <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011302003825"
-            style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
-            <img src="/assets/img/other/gov.png" alt="Filing No Icon" style="float:left;" />
-            <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">粤公网安备
-              44011302003825号</p>
-          </a>
-
-          <div class="footer-right">
-            <p class="mb-0">
-
+      <div class="d-flex justify-content-center align-items-center text-muted mx-md-3">
+          <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+          <p>
               {%- capture _platform -%}
               <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a>
               {%- endcapture -%}
@@ -42,19 +14,31 @@
               {%- endcapture -%}
 
               {{ site.data.locales[include.lang].meta | replace: ':PLATFORM', _platform | replace: ':THEME', _theme }}
-            </p>
+          </p>
 
-            <p>
+          <p>
               {{- '©' }}
               {{ 'now' | date: '%Y' }}
               <a href="{{ site.social.links[0] }}">{{ site.social.name }}</a>.
               {% if site.data.locales[include.lang].copyright.brief %}
               <span data-bs-toggle="tooltip" data-bs-placement="top"
-                title="{{ site.data.locales[include.lang].copyright.verbose }}">
-                {{- site.data.locales[include.lang].copyright.brief -}}
+                  title="{{ site.data.locales[include.lang].copyright.verbose }}">
+                  {{- site.data.locales[include.lang].copyright.brief -}}
               </span>
               {% endif %}
-            </p>
-          </div>
-        </div>
+          </p>
+
+          <p>
+              <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人。</span>
+              <br>
+              <a href="http://beian.miit.gov.cn/" target="_blank">粤ICP备2022142323号-1</a>
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011302003825"
+                  style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                  <img src="/assets/img/other/gov.png" alt="Filing No Icon" style="float:left;" />
+                  <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">粤公网安备
+                      44011302003825号</p>
+              </a>
+          </p>
+      </div>
+  </div>
 </footer>
