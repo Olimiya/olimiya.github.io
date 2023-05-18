@@ -1,3 +1,15 @@
+-
+  icon: notion.ico
+  link: https://notion.olimi.icu
+  title: Olimi's Notion Blog
+  description: >-
+     从Notion中直接转化生成的博客，为现在的主要更新。
+-
+  icon: xlog.png
+  link: https://xlog.olimi.icu
+  title: Olimi's XLOG Blog
+  description: >-
+     一个Web3的在线博客，存着玩。
 # -
 #   icon: 保存在 assets/img/subdomain 下的图标
 #   link: 子域名链接
