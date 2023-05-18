@@ -2,29 +2,29 @@
 
 platforms:
   - type: Twitter
-    icon: "iconfont icon-twitter"
+    icon: "icon-twitter"
     link: "https://twitter.com/intent/tweet?text=TITLE&url=URL"
 
   - type: Line
-    icon: "iconfont icon-13"
+    icon: "icon-13"
     link: "https://lineit.line.me/share/ui?url=URL&text=TITLE"
 
   - type: Facebook
-    icon: "iconfont icon-facebook"
+    icon: "icon-facebook"
     link: "https://www.facebook.com/sharer/sharer.php?title=TITLE&u=URL"
 
   - type: Telegram
-    icon: "iconfont icon-telegram"
+    icon: "icon-telegram"
     link: "https://t.me/share/url?url=URL&text=TITLE"
 
   - type: QQ
-    icon: "iconfont icon-QQ"
+    icon: "icon-QQ"
     link: "http://connect.qq.com/widget/shareqq/index.html?url=URL&title=TITLE"
 
   - type: QQ 空间
-    icon: "iconfont icon-qzone"
+    icon: "icon-qzone"
     link: "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=URL&title=TITLE"
 
   - type: 微博
-    icon: "iconfont icon-weibo"
+    icon: "icon-weibo"
     link: "http://service.weibo.com/share/share.php?title=TITLE&url=URL"

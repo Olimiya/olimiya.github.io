@@ -1,6 +1,6 @@
 ---
 title: 关于
-icon: iconfont icon-info
+icon: icon-info
 order: 5
 ---
 

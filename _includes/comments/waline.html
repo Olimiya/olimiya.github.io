@@ -1,5 +1,5 @@
-<script src="{{ site.data.assets[origin].waline.js | relative_url }}"></script>
-<link rel="stylesheet" href="{{ site.data.assets[origin].waline.css | relative_url }}" />
+<script src="{{ site.data.origin[type].waline.js | relative_url }}"></script>
+<link rel="stylesheet" href="{{ site.data.origin[type].waline.css | relative_url }}" />
 <div id="waline"></div>
 <script>
   $(function() {
@@ -10,10 +10,10 @@
       el: '#waline',
       serverURL: '{{ site.comments.waline.server }}',
       emoji: [
-        "{{ site.data.assets[origin].waline.emojis | relative_url }}/qq",
-        '{{ site.data.assets[origin].waline.emojis | relative_url }}/tieba',
-        '{{ site.data.assets[origin].waline.emojis | relative_url }}/tw-emoji',
-        '{{ site.data.assets[origin].waline.emojis | relative_url }}/bilibili',
+        "{{ site.data.origin[type].waline.emojis | relative_url }}/qq",
+        '{{ site.data.origin[type].waline.emojis | relative_url }}/tieba',
+        '{{ site.data.origin[type].waline.emojis | relative_url }}/tw-emoji',
+        '{{ site.data.origin[type].waline.emojis | relative_url }}/bilibili',
       ],
       dark: "__waline__css__",
       locale,
