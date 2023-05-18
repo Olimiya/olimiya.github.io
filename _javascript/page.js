@@ -1,7 +1,8 @@
 import { basic, initSidebar, initTopbar } from './modules/layouts';
 import {
+  imgLazy,
+  imgPopup,
   initClipboard,
-  smoothScroll,
   highlightLines,
   runCpp,
   runJavascript,
@@ -12,8 +13,9 @@ import {
 basic();
 initSidebar();
 initTopbar();
+imgLazy();
+imgPopup();
 initClipboard();
-smoothScroll();
 highlightLines();
 runCpp();
 runJavascript();

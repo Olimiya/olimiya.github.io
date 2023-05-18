@@ -1,64 +1,23 @@
-.subdomain-entity {
-  border-bottom: 1px solid var(--main-border-color);
+.subdomain-icon {
+  display: inline-flex;
+  align-items: center;
 
-  .subdomain-link {
-    height: 1rem;
-    display: flex;
-
-    h6 {
-      display: flex;
-      color: #888;
-      font-size: 0.8rem;
-      max-width: 100%;
-
-      a.subdomain-a {
-        position: relative;
-        height: 1rem;
-        color: #888;
-        max-width: 100%;
-        border: none;
-        text-decoration: none;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-    }
+  img {
+    display: block;
   }
+}
 
-  .subdomain-head {
-    h1 {
-      margin-top: 2rem;
-      margin-bottom: 0;
-      line-height: 100%;
+.subdomain-title {
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-left: 0.5rem;
+}
 
-      a.subdomain-head-a {
-        position: relative;
-        display: flex;
-        border: none;
-        text-decoration: none;
-
-        .subdomain-icon {
-          display: inline-flex;
-          align-items: center;
-          margin-right: 0.5rem;
-
-          img {
-            display: block;
-          }
-        }
-
-        .subdomain-title {
-          display: inline-block;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-      }
-
-      a.subdomain-a:hover {
-        border: none;
-        text-decoration: none;
-      }
-    }
-  }
+div.subdomain-a {
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
