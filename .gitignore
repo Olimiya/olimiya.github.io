@@ -30,3 +30,5 @@ package-lock.json
 
 # Misc
 assets/js/dist
+
+settings.local.json
