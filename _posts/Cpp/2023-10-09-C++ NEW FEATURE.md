@@ -1008,5 +1008,3 @@ void do_something(Object* ptr) {
 - `_tuple_index<1, std::string, double, double, int>`
 - `_tuple_index<2, std::string, double, double, int>`
 - `_tuple_index<3, std::string, double, double, int>`
-
-[智能指针总结](C++%20NEW%20FEATURE/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%80%BB%E7%BB%93%20cdc7f7103a5c475399b135bed8781c1e.md)

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Spring Boot"
 date: 2023-07-25 16:37
 categories: [通用]
@@ -131,7 +131,7 @@ JAVA Guide: [Spring常见面试题总结 | JavaGuide(Java面试 + 学习指南)]
 
 # Mybatis
 
-[Mybatis使用](Spring%20Boot/Mybatis%E4%BD%BF%E7%94%A8%206688631ccff84b7c983cc68e94145dc3.md) 
+Mybatis使用
 
 # 工程问题
 

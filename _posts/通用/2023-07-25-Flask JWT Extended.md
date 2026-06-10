@@ -1,4 +1,4 @@
-﻿---
+---
 title: Flask JWT Extended
 date: 2023-07-25 16:37
 categories: [通用]
@@ -28,7 +28,7 @@ flask-jwt-extended：[https://github.com/vimalloc/flask-jwt-extended](https://gi
 - 基本用法，登录token、jwt_requirered认证。
 - 官方文档的自动用户加载。
 
-第二点的实现过程，碰到数据库的问题。（官方给的例子省略掉数据库的部分）。数据库部分参考：[快速入门](Flask%20SQLAlchemy%2085c1ee6ee73d4f54afb8ac2ff70472d5.md) 
+第二点的实现过程，碰到数据库的问题。（官方给的例子省略掉数据库的部分）。数据库部分参考：快速入门（Flask SQLAlchemy）
 
 - 基本测试代码
     
