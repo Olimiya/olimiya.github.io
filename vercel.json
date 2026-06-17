@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build && JEKYLL_ENV=production bundle exec jekyll build",
+  "buildCommand": "npm run build && LANG=en_US.UTF-8 JEKYLL_ENV=production bundle exec jekyll build",
   "outputDirectory": "_site",
-  "installCommand": "npm install && bundle install",
+  "installCommand": "npm install && LANG=en_US.UTF-8 bundle install",
   "framework": null
 }
