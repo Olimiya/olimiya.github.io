@@ -1,10 +1,11 @@
 # AI 助手指南 — olimiya.github.io
 
-基于 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题定制的个人 Jekyll 博客，部署于 `https://olimi.icu`。
+基于 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题定制的个人 Jekyll 博客，通过 Vercel 部署，域名 `https://olimi.icu`。
 
 ## 项目概览
 
 - **框架**：Jekyll + Chirpy 主题（自定义版本，Fork 自 Nihil）
+- **部署**：Vercel（自动从 `master` 分支构建部署）
 - **语言**：`zh-CN`，时区 `Asia/Shanghai`
 - **评论系统**：Waline（`https://waline.olimi.icu/`）
 - **分析**：Google Analytics（`G-NKV7205XPP`）
@@ -75,3 +76,5 @@ tags: [标签1, 标签2]               # 小写
 - **时区问题**：`future: true` 已设置以避免因时区差异导致文章被跳过
 - **本地 gem**：`jekyll-archives` 使用本地路径 `.gems/jekyll-archives/`，勿删除该目录
 - **JS 打包**：修改 `_javascript/` 后需运行 `npm run build` 重新打包；`package.json` 定义了构建脚本
+- **Vercel 构建**：Vercel 自动执行 `npm run build && JEKYLL_ENV=production bundle exec jekyll build`，配置见 `vercel.json`
+- **Ruby 版本**：Vercel 通过 `.ruby-version` 文件识别 Ruby 版本（当前 3.2）
