@@ -1,0 +1,70 @@
+name: "Deploy to GitHub Pages"
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - ".github/**"
+      - "!.github/workflows/pages-deploy.yml"
+      - ".gitignore"
+      - "README.md"
+      - "LICENSE"
+
+# 关键：授予 Pages 部署所需权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只允许一个部署运行
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Build Assets
+        env:
+          RUBYOPT: "-E UTF-8"
+          LC_ALL: "C.UTF-8"
+        run: npm i && npm run build
+
+      - name: Build Site
+        env:
+          JEKYLL_ENV: production
+          RUBYOPT: "-E UTF-8"
+          LC_ALL: "C.UTF-8"
+        run: bundle exec jekyll build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
